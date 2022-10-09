@@ -1,5 +1,7 @@
-import { Stack } from "@mui/material";
+import { Box, IconButton, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { IconMenu2 } from "@tabler/icons";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import LeftMenu from "View/Component/LeftMenu";
 export default function MainLayout() {
@@ -22,12 +24,32 @@ export default function MainLayout() {
       }),
     })
   );
+  const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(true);
   return (
-    <Stack height="100%" direction={"row"} justifyContent="flex-start">
-      <LeftMenu drawerWidth={drawerWidth} />
-      <Main open={true} height="100%">
-        <Outlet />
-      </Main>
+    <Stack
+      sx={{ backgroundColor: "#F5F5F5" }}
+      direction={"column"}
+      justifyContent={"flex-start"}
+    >
+      <Box sx={{ height: 40 }} pl={30}>
+        CHIPLAYER
+        <IconButton
+          onClick={() => {
+            setIsLeftMenuOpen(!isLeftMenuOpen);
+          }}
+        >
+          <IconMenu2 stroke={0.5} />
+        </IconButton>
+      </Box>
+      <Stack direction={"row"} justifyContent="space-between">
+        <LeftMenu open={isLeftMenuOpen} drawerWidth={drawerWidth} />
+        <Main
+          sx={{ backgroundColor: "#fff", padding: 1 }}
+          open={isLeftMenuOpen}
+        >
+          <Outlet />
+        </Main>
+      </Stack>
     </Stack>
   );
 }

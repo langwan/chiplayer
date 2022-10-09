@@ -1,0 +1,9 @@
+html, body, #root {
+    padding: 0;
+    margin: 0;
+    font-size: 0.6rem;
+    color: #677684;
+}
+* {
+    color: #677684;
+}

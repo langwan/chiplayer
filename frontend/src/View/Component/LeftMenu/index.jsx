@@ -1,16 +1,13 @@
-import { Folder as FolderIcon } from "@mui/icons-material";
 import {
-  Avatar,
-  Box,
   Drawer,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Stack,
-  Typography,
 } from "@mui/material";
+import { IconHelp, IconKey, IconMessages, IconMovie } from "@tabler/icons";
 import { useNavigate } from "react-router-dom";
+
 export default function LeftMenu(props) {
   let navigate = useNavigate();
   return (
@@ -21,30 +18,42 @@ export default function LeftMenu(props) {
         width: props.drawerWidth,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
+          backgroundColor: "#F5F5F5",
           width: props.drawerWidth,
           boxSizing: "border-box",
+          top: 40,
+          border: "none",
         },
       }}
-      open={true}
+      open={props.open}
     >
-      <Box p={2}>
-        <Stack direction={"row"} spacing={1} alignItems="center">
-          <Avatar src="chi.jpg" sx={{ width: 32, height: 32 }}></Avatar>
-          <Typography>痴货发明家</Typography>
-        </Stack>
-      </Box>
-      <List>
-        <ListItemButton onClick={() => navigate("/")}>
+      <List sx={{ paddingTop: 0 }}>
+        <ListItemButton
+          sx={{ backgroundColor: "#fff" }}
+          onClick={() => navigate("/")}
+        >
           <ListItemIcon>
-            <FolderIcon />
+            <IconMovie stroke={0.5} />
           </ListItemIcon>
-          <ListItemText>Demo1</ListItemText>
+          <ListItemText>资料库</ListItemText>
         </ListItemButton>
         <ListItemButton onClick={() => navigate("/demo2")}>
           <ListItemIcon>
-            <FolderIcon />
+            <IconKey stroke={0.5} />
           </ListItemIcon>
-          <ListItemText>Demo2</ListItemText>
+          <ListItemText>密钥管理</ListItemText>
+        </ListItemButton>
+        <ListItemButton onClick={() => navigate("/demo2")}>
+          <ListItemIcon>
+            <IconHelp stroke={0.5} />
+          </ListItemIcon>
+          <ListItemText>使用手册</ListItemText>
+        </ListItemButton>
+        <ListItemButton onClick={() => navigate("/demo2")}>
+          <ListItemIcon>
+            <IconMessages stroke={0.5} />
+          </ListItemIcon>
+          <ListItemText>联系方式</ListItemText>
         </ListItemButton>
       </List>
     </Drawer>
