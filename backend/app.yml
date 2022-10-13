@@ -1,0 +1,2 @@
+sqlite:
+  path: ${document_path}/.chiplayer/chiplayer.db
