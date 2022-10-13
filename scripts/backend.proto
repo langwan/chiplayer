@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = ".;pb";
+
+message Empty {}
+
+message HelloResponse {
+  string message = 1;
+}
+
+message TaskAddRequest {
+  repeated string path = 1;
+}
+
+service Backend {
+  rpc Hello(Empty) returns(HelloResponse);
+  rpc TaskAdd(TaskAddRequest)returns(Empty);
+}

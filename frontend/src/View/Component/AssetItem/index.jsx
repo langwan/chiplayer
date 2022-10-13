@@ -10,6 +10,10 @@ export default function AssetItem(props) {
           boxShadow: "none",
           backgroundColor: "#F5F5F5",
         },
+
+        "& .MuiCardContent-root:last-child": {
+          padding: 1,
+        },
       }}
     >
       <CardMedia
@@ -19,7 +23,7 @@ export default function AssetItem(props) {
         alt="green iguana"
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography variant="h5" component="div">
           {props.title}
         </Typography>
       </CardContent>
