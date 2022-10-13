@@ -23,7 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendClient interface {
 	Hello(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HelloResponse, error)
-	TaskAdd(ctx context.Context, in *TaskAddRequest, opts ...grpc.CallOption) (*Empty, error)
+	AssetAdd(ctx context.Context, in *AssetAddRequest, opts ...grpc.CallOption) (*Empty, error)
+	AssetItemList(ctx context.Context, in *AssetItemListRequest, opts ...grpc.CallOption) (*AssetItemListResponse, error)
+	FileAdd(ctx context.Context, in *FileAddRequest, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type backendClient struct {
@@ -43,9 +45,27 @@ func (c *backendClient) Hello(ctx context.Context, in *Empty, opts ...grpc.CallO
 	return out, nil
 }
 
-func (c *backendClient) TaskAdd(ctx context.Context, in *TaskAddRequest, opts ...grpc.CallOption) (*Empty, error) {
+func (c *backendClient) AssetAdd(ctx context.Context, in *AssetAddRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/Backend/TaskAdd", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/Backend/AssetAdd", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendClient) AssetItemList(ctx context.Context, in *AssetItemListRequest, opts ...grpc.CallOption) (*AssetItemListResponse, error) {
+	out := new(AssetItemListResponse)
+	err := c.cc.Invoke(ctx, "/Backend/AssetItemList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendClient) FileAdd(ctx context.Context, in *FileAddRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/Backend/FileAdd", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +77,9 @@ func (c *backendClient) TaskAdd(ctx context.Context, in *TaskAddRequest, opts ..
 // for forward compatibility
 type BackendServer interface {
 	Hello(context.Context, *Empty) (*HelloResponse, error)
-	TaskAdd(context.Context, *TaskAddRequest) (*Empty, error)
+	AssetAdd(context.Context, *AssetAddRequest) (*Empty, error)
+	AssetItemList(context.Context, *AssetItemListRequest) (*AssetItemListResponse, error)
+	FileAdd(context.Context, *FileAddRequest) (*Empty, error)
 }
 
 // UnimplementedBackendServer should be embedded to have forward compatible implementations.
@@ -67,8 +89,14 @@ type UnimplementedBackendServer struct {
 func (UnimplementedBackendServer) Hello(context.Context, *Empty) (*HelloResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
 }
-func (UnimplementedBackendServer) TaskAdd(context.Context, *TaskAddRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TaskAdd not implemented")
+func (UnimplementedBackendServer) AssetAdd(context.Context, *AssetAddRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssetAdd not implemented")
+}
+func (UnimplementedBackendServer) AssetItemList(context.Context, *AssetItemListRequest) (*AssetItemListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssetItemList not implemented")
+}
+func (UnimplementedBackendServer) FileAdd(context.Context, *FileAddRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FileAdd not implemented")
 }
 
 // UnsafeBackendServer may be embedded to opt out of forward compatibility for this service.
@@ -100,20 +128,56 @@ func _Backend_Hello_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Backend_TaskAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TaskAddRequest)
+func _Backend_AssetAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssetAddRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServer).TaskAdd(ctx, in)
+		return srv.(BackendServer).AssetAdd(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Backend/TaskAdd",
+		FullMethod: "/Backend/AssetAdd",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServer).TaskAdd(ctx, req.(*TaskAddRequest))
+		return srv.(BackendServer).AssetAdd(ctx, req.(*AssetAddRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Backend_AssetItemList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssetItemListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServer).AssetItemList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Backend/AssetItemList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServer).AssetItemList(ctx, req.(*AssetItemListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Backend_FileAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FileAddRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServer).FileAdd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Backend/FileAdd",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServer).FileAdd(ctx, req.(*FileAddRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -130,8 +194,16 @@ var Backend_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Backend_Hello_Handler,
 		},
 		{
-			MethodName: "TaskAdd",
-			Handler:    _Backend_TaskAdd_Handler,
+			MethodName: "AssetAdd",
+			Handler:    _Backend_AssetAdd_Handler,
+		},
+		{
+			MethodName: "AssetItemList",
+			Handler:    _Backend_AssetItemList_Handler,
+		},
+		{
+			MethodName: "FileAdd",
+			Handler:    _Backend_FileAdd_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -12,7 +12,32 @@ message TaskAddRequest {
   repeated string path = 1;
 }
 
+message AssetAddRequest {
+  string assetName = 1;
+}
+message FileAddRequest {
+  string assetName = 1;
+  string filePath = 2;
+}
+
+message AssetItemListRequest {
+  string assetName = 1;
+}
+
+message Item {
+  string name = 1;
+  bool isFolder = 2;
+  int64 fileSize = 3;
+  int64 modTime = 4;
+}
+
+message AssetItemListResponse {
+  repeated Item items = 1;
+}
+
 service Backend {
   rpc Hello(Empty) returns(HelloResponse);
-  rpc TaskAdd(TaskAddRequest)returns(Empty);
+  rpc AssetAdd(AssetAddRequest) returns(Empty);
+  rpc AssetItemList(AssetItemListRequest) returns(AssetItemListResponse);
+  rpc FileAdd(FileAddRequest) returns(Empty);
 }

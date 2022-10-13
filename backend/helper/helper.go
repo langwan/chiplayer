@@ -12,3 +12,9 @@ func GetAppStorePath() string {
 	io.CreateFolder(path, true)
 	return path
 }
+
+func GetDefaultDataPath() string {
+	path := path.Join(GetAppStorePath(), "data")
+	io.CreateFolder(path, true)
+	return path
+}
