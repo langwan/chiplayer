@@ -6,7 +6,7 @@ import (
 	"github.com/langwan/langgo/components/sqlite"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
-	"path"
+	"path/filepath"
 	"testing"
 )
 
@@ -15,9 +15,8 @@ func TestSqlite(t *testing.T) {
 		gorm.Model
 		Name string
 	}
-	langgo.Run()
-	dbPath := path.Join(helper.GetAppStorePath(), "db.db")
-	langgo.RunComponent(&sqlite.Instance{Path: dbPath})
+	dbPath := filepath.Join(helper.GetAppStorePath(), "db.db")
+	langgo.Run(&sqlite.Instance{Path: dbPath})
 	err := sqlite.Get().AutoMigrate(&account{})
 	assert.NoError(t, err)
 	acc := account{Name: "langgo"}

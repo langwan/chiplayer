@@ -4,16 +4,26 @@ import (
 	"backend/helper"
 	"backend/pb"
 	"context"
+	"github.com/langwan/langgo/components/sqlite"
 	helper_os "github.com/langwan/langgo/helpers/os"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"os"
 	"path"
+	"path/filepath"
 )
 
 type BackendService struct {
 }
 
+func (b BackendService) TaskList(ctx context.Context, empty *pb.Empty) (tasks []TaskModel, err error) {
+
+	res := sqlite.Get().Find(&tasks)
+	if res.RowsAffected > 0 {
+		return tasks, nil
+	}
+	return tasks, res.Error
+}
 func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*pb.AssetListResponse, error) {
 
 	files, err := os.ReadDir(helper.GetDefaultDataPath())
@@ -40,7 +50,7 @@ func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*pb.Ass
 
 func (b BackendService) AssetItemList(ctx context.Context, request *pb.AssetItemListRequest) (*pb.AssetItemListResponse, error) {
 	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
-	assetPath := path.Join(dataPath, request.GetAssetName())
+	assetPath := filepath.Join(dataPath, request.GetAssetName())
 	files, err := helper_os.ReadDir(assetPath, true)
 	if err != nil {
 		return nil, err
@@ -67,25 +77,31 @@ func (b BackendService) FileAdd(ctx context.Context, request *pb.FileAddRequest)
 	if !helper_os.FileExists(request.GetFilePath()) {
 		return &pb.Empty{}, status.Error(codes.NotFound, "文件不存在")
 	}
-	dataPath := helper.GetDefaultDataPath()
-	filename := path.Base(request.GetFilePath())
-	dest := path.Join(dataPath, request.GetAssetName(), filename)
-	var err error
-	if Preferences.isMove {
-		err = helper_os.MoveFile(request.GetFilePath(), dest)
-	} else {
-		err = helper_os.CopyFile(request.GetFilePath(), dest)
-	}
 
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
+	filename := filepath.Base(request.GetFilePath())
+	dst := filepath.Join(dataPath, request.GetAssetName(), filename)
+	task := TaskModel{
+		AssetName:     request.GetAssetName(),
+		Name:          filename,
+		LocalPath:     request.GetFilePath(),
+		DstPath:       dst,
+		TotalBytes:    0,
+		ConsumedBytes: 0,
+		IsCompleted:   false,
+		Error:         "",
+	}
+	err := TaskAdd(&task)
 	if err != nil {
 		return nil, status.Errorf(codes.Aborted, "%v", err)
 	}
+	go RequestStart(&task)
 	return &pb.Empty{}, nil
 }
 
 func (b BackendService) AssetAdd(ctx context.Context, request *pb.AssetAddRequest) (*pb.Empty, error) {
 	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
-	assetPath := path.Join(dataPath, request.GetAssetName())
+	assetPath := filepath.Join(dataPath, request.GetAssetName())
 	if helper_os.FileExists(assetPath) {
 		return &pb.Empty{}, status.Error(codes.AlreadyExists, "资料夹已经存在")
 	}

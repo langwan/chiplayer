@@ -45,10 +45,14 @@ message AssetListResponse {
   repeated Asset assets = 1;
 }
 
+
+
 service Backend {
   rpc Hello(Empty) returns(HelloResponse);
   rpc AssetAdd(AssetAddRequest) returns(Empty);
   rpc AssetList(Empty) returns(AssetListResponse);
   rpc AssetItemList(AssetItemListRequest) returns(AssetItemListResponse);
   rpc FileAdd(FileAddRequest) returns(Empty);
+  rpc FileBackend(FileAddRequest) returns(Empty);
+  rpc TaskList(Empty) returns(TaskListResponse);
 }

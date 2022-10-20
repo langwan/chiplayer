@@ -1,3 +1,5 @@
 node_modules
 frontend/public/test
 .idea
+backend/logs
+backend/samples

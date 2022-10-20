@@ -12,8 +12,9 @@ type TaskModel struct {
 	AssetName     string
 	Name          string
 	LocalPath     string
-	AssetPath     bool
+	DstPath       string
 	TotalBytes    int64
 	ConsumedBytes int64
 	IsCompleted   bool
+	Error         string
 }

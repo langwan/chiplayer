@@ -9,15 +9,19 @@ import (
 	"github.com/langwan/langgo/core"
 )
 
-func main() {
-	var port int
-	flag.IntVar(&port, "port", 8000, "port")
-	flag.Parse()
+func init() {
 	dbName := helper.GetDatabasePath()
 	langgo.Run(&sqlite.Instance{Path: dbName})
 	if core.EnvName == core.Development {
 		sqlite.Get().AutoMigrate(&PreferenceModel{}, &TaskModel{})
 	}
+}
+
+func main() {
+	var port int
+	flag.IntVar(&port, "port", 8000, "port")
+	flag.Parse()
+
 	//dbPath := path.Join(helper.GetAppStorePath(), "db.db")
 	//langgo.RunComponent(&sqlite.Instance{Path: dbPath})
 	core.GetComponentConfiguration("app", &app.Configuration)

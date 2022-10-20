@@ -4,7 +4,7 @@ import (
 	"backend/pb"
 	"context"
 	jsoniter "github.com/json-iterator/go"
-	helperGrpc "github.com/langwan/langgo/helpers/grpc"
+	helper_code "github.com/langwan/langgo/helpers/code"
 	"testing"
 )
 
@@ -18,7 +18,7 @@ func BenchmarkGrpcCall(b *testing.B) {
 	reqString := string(marshal)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		helperGrpc.Call(s, "Hello", reqString, nil)
+		helper_code.Call(context.Background(), s, "Hello", reqString)
 	}
 }
 
