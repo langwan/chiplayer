@@ -38,11 +38,11 @@ export default function LeftMenu(props) {
           <ListItemText>资料库</ListItemText>
         </ListItemButton>
 
-        <ListItemButton onClick={() => navigate("/demo2")}>
+        <ListItemButton onClick={() => navigate("/tasks")}>
           <ListItemIcon>
             <IconHelp stroke={0.5} />
           </ListItemIcon>
-          <ListItemText>使用手册</ListItemText>
+          <ListItemText>任务</ListItemText>
         </ListItemButton>
         <ListItemButton onClick={() => navigate("/demo2")}>
           <ListItemIcon>

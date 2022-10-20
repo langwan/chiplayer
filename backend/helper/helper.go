@@ -2,19 +2,24 @@ package helper
 
 import (
 	"backend/app"
-	"github.com/langwan/langgo/helpers/io"
+	helper_os "github.com/langwan/langgo/helpers/os"
+
 	"github.com/langwan/langgo/helpers/platform"
 	"path"
 )
 
 func GetAppStorePath() string {
-	path := path.Join(platform.GetDefaultDocumentFolderPath(), app.StoreName)
-	io.CreateFolder(path, true)
+	path := path.Join(helper_platform.GetDefaultDocumentFolderPath(), app.StoreName)
+	helper_os.CreateFolder(path, true)
 	return path
 }
 
 func GetDefaultDataPath() string {
 	path := path.Join(GetAppStorePath(), "data")
-	io.CreateFolder(path, true)
+	helper_os.CreateFolder(path, true)
 	return path
+}
+
+func GetDatabasePath() string {
+	return path.Join(GetAppStorePath(), app.AppName+".db")
 }

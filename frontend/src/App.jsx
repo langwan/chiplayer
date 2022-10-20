@@ -4,7 +4,8 @@ import { lazy, Suspense } from "react";
 import { useRoutes } from "react-router-dom";
 const Demo1 = lazy(() => import("View/Page/Demo1"));
 const Demo2 = lazy(() => import("View/Page/Demo2"));
-const AssetList = lazy(() => import("View/Page/AssetList"));
+const AssetList = lazy(() => import("View/Page/Assets"));
+const VideoList = lazy(() => import("View/Page/Videos"));
 export default function App() {
   return useRoutes([
     {
@@ -16,8 +17,8 @@ export default function App() {
           element: <Loadable lazy={<AssetList />} />,
         },
         {
-          path: "/demo1",
-          element: <Loadable lazy={<Demo1 />} />,
+          path: "/video/:assetId",
+          element: <Loadable lazy={<VideoList />} />,
         },
         {
           path: "demo2",

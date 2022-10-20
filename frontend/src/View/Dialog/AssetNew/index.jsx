@@ -6,34 +6,39 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-export default function AssetNewDialog(props) {
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    setOpen(props.open);
-    return () => {};
-  }, [props.open]);
+import { backendAxios } from "Common/Request";
+
+import { useState } from "react";
+export default function AssetNewDialog({ open, maxWidth, onClose, onSubmit }) {
+  const [assetName, setAssetName] = useState("");
   return (
-    <Dialog
-      open={open}
-      onClose={(event) => setOpen(false)}
-      maxWidth={props.maxWidth}
-      fullWidth={true}
-    >
-      <DialogTitle>新建资料夹</DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth={maxWidth} fullWidth={true}>
+      <DialogTitle>新建资料库</DialogTitle>
       <DialogContent>
-        <TextField fullWidth />
+        <TextField
+          fullWidth
+          onChange={(event) => {
+            setAssetName(event.target.value);
+          }}
+          value={assetName}
+        />
       </DialogContent>
       <DialogActions>
-        <form onSubmit={props.onSubmit}>
-          <Button
-            onClick={(event) => {
-              setOpen(false);
-            }}
-          >
-            取消
-          </Button>
-          <Button>保存</Button>
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault();
+            try {
+              const response = await backendAxios.post("/rpc/AssetAdd", {
+                assetName,
+              });
+              onSubmit(event);
+            } catch (e) {
+              console.log(e);
+            }
+          }}
+        >
+          <Button onClick={onClose}>取消</Button>
+          <Button type="submit">保存</Button>
         </form>
       </DialogActions>
     </Dialog>

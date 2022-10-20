@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 export default function AssetItem(props) {
   return (
     <Card
+      {...props}
       sx={{
         "&.MuiCard-root": {
           boxShadow: "none",
@@ -17,10 +18,9 @@ export default function AssetItem(props) {
       }}
     >
       <CardMedia
-        component="img"
-        height="140"
-        image={props.cover}
-        alt="green iguana"
+        sx={{ height: 260, objectFit: "cover" }}
+        src={process.env.PUBLIC_URL + "/res/cover.mov"}
+        component="video"
       />
       <CardContent>
         <Typography variant="h5" component="div">

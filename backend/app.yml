@@ -1,2 +1,2 @@
-sqlite:
-  path: ${document_path}/.chiplayer/chiplayer.db
+app:
+  http_port: 8000

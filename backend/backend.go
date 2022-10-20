@@ -4,7 +4,7 @@ import (
 	"backend/helper"
 	"backend/pb"
 	"context"
-	"github.com/langwan/langgo/helpers/io"
+	helper_os "github.com/langwan/langgo/helpers/os"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"os"
@@ -14,9 +14,34 @@ import (
 type BackendService struct {
 }
 
+func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*pb.AssetListResponse, error) {
+
+	files, err := os.ReadDir(helper.GetDefaultDataPath())
+	if err != nil {
+		return nil, err
+	}
+	response := pb.AssetListResponse{}
+
+	for _, file := range files {
+		if file.Name() == ".DS_Store" {
+			continue
+		}
+		info, err := file.Info()
+		if err != nil {
+			continue
+		}
+		response.Assets = append(response.Assets, &pb.Asset{
+			Name:    file.Name(),
+			ModTime: info.ModTime().UnixNano(),
+		})
+	}
+	return &response, nil
+}
+
 func (b BackendService) AssetItemList(ctx context.Context, request *pb.AssetItemListRequest) (*pb.AssetItemListResponse, error) {
-	dirPath := path.Join(helper.GetDefaultDataPath(), request.GetAssetName())
-	files, err := os.ReadDir(dirPath)
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
+	assetPath := path.Join(dataPath, request.GetAssetName())
+	files, err := helper_os.ReadDir(assetPath, true)
 	if err != nil {
 		return nil, err
 	}
@@ -28,17 +53,18 @@ func (b BackendService) AssetItemList(ctx context.Context, request *pb.AssetItem
 			continue
 		}
 		response.Items = append(response.Items, &pb.Item{
-			Name:     file.Name(),
-			IsFolder: file.IsDir(),
-			FileSize: info.Size(),
-			ModTime:  info.ModTime().UnixNano(),
+			Name:      file.Name(),
+			IsFolder:  file.IsDir(),
+			FileSize:  info.Size(),
+			ModTime:   info.ModTime().UnixNano(),
+			PlayerUri: path.Join("/player", request.GetAssetName(), file.Name()),
 		})
 	}
 	return &response, nil
 }
 
 func (b BackendService) FileAdd(ctx context.Context, request *pb.FileAddRequest) (*pb.Empty, error) {
-	if !io.FileExists(request.GetFilePath()) {
+	if !helper_os.FileExists(request.GetFilePath()) {
 		return &pb.Empty{}, status.Error(codes.NotFound, "文件不存在")
 	}
 	dataPath := helper.GetDefaultDataPath()
@@ -46,9 +72,9 @@ func (b BackendService) FileAdd(ctx context.Context, request *pb.FileAddRequest)
 	dest := path.Join(dataPath, request.GetAssetName(), filename)
 	var err error
 	if Preferences.isMove {
-		err = io.MoveFile(request.GetFilePath(), dest)
+		err = helper_os.MoveFile(request.GetFilePath(), dest)
 	} else {
-		err = io.CopyFile(request.GetFilePath(), dest)
+		err = helper_os.CopyFile(request.GetFilePath(), dest)
 	}
 
 	if err != nil {
@@ -58,12 +84,12 @@ func (b BackendService) FileAdd(ctx context.Context, request *pb.FileAddRequest)
 }
 
 func (b BackendService) AssetAdd(ctx context.Context, request *pb.AssetAddRequest) (*pb.Empty, error) {
-	dataPath := helper.GetDefaultDataPath()
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
 	assetPath := path.Join(dataPath, request.GetAssetName())
-	if io.FileExists(assetPath) {
+	if helper_os.FileExists(assetPath) {
 		return &pb.Empty{}, status.Error(codes.AlreadyExists, "资料夹已经存在")
 	}
-	err := io.CreateFolder(assetPath, false)
+	err := helper_os.CreateFolder(assetPath, false)
 	if err != nil {
 		return &pb.Empty{}, status.Error(codes.Aborted, err.Error())
 	}

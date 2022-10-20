@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type BackendClient interface {
 	Hello(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HelloResponse, error)
 	AssetAdd(ctx context.Context, in *AssetAddRequest, opts ...grpc.CallOption) (*Empty, error)
+	AssetList(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AssetListResponse, error)
 	AssetItemList(ctx context.Context, in *AssetItemListRequest, opts ...grpc.CallOption) (*AssetItemListResponse, error)
 	FileAdd(ctx context.Context, in *FileAddRequest, opts ...grpc.CallOption) (*Empty, error)
 }
@@ -54,6 +55,15 @@ func (c *backendClient) AssetAdd(ctx context.Context, in *AssetAddRequest, opts 
 	return out, nil
 }
 
+func (c *backendClient) AssetList(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AssetListResponse, error) {
+	out := new(AssetListResponse)
+	err := c.cc.Invoke(ctx, "/Backend/AssetList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendClient) AssetItemList(ctx context.Context, in *AssetItemListRequest, opts ...grpc.CallOption) (*AssetItemListResponse, error) {
 	out := new(AssetItemListResponse)
 	err := c.cc.Invoke(ctx, "/Backend/AssetItemList", in, out, opts...)
@@ -78,6 +88,7 @@ func (c *backendClient) FileAdd(ctx context.Context, in *FileAddRequest, opts ..
 type BackendServer interface {
 	Hello(context.Context, *Empty) (*HelloResponse, error)
 	AssetAdd(context.Context, *AssetAddRequest) (*Empty, error)
+	AssetList(context.Context, *Empty) (*AssetListResponse, error)
 	AssetItemList(context.Context, *AssetItemListRequest) (*AssetItemListResponse, error)
 	FileAdd(context.Context, *FileAddRequest) (*Empty, error)
 }
@@ -91,6 +102,9 @@ func (UnimplementedBackendServer) Hello(context.Context, *Empty) (*HelloResponse
 }
 func (UnimplementedBackendServer) AssetAdd(context.Context, *AssetAddRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssetAdd not implemented")
+}
+func (UnimplementedBackendServer) AssetList(context.Context, *Empty) (*AssetListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssetList not implemented")
 }
 func (UnimplementedBackendServer) AssetItemList(context.Context, *AssetItemListRequest) (*AssetItemListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssetItemList not implemented")
@@ -146,6 +160,24 @@ func _Backend_AssetAdd_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Backend_AssetList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServer).AssetList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Backend/AssetList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServer).AssetList(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Backend_AssetItemList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AssetItemListRequest)
 	if err := dec(in); err != nil {
@@ -196,6 +228,10 @@ var Backend_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AssetAdd",
 			Handler:    _Backend_AssetAdd_Handler,
+		},
+		{
+			MethodName: "AssetList",
+			Handler:    _Backend_AssetList_Handler,
 		},
 		{
 			MethodName: "AssetItemList",

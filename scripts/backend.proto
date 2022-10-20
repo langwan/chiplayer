@@ -29,15 +29,26 @@ message Item {
   bool isFolder = 2;
   int64 fileSize = 3;
   int64 modTime = 4;
+  string playerUri = 5;
 }
 
 message AssetItemListResponse {
   repeated Item items = 1;
 }
 
+message Asset {
+  string name = 1;
+  int64 modTime = 2;
+}
+
+message AssetListResponse {
+  repeated Asset assets = 1;
+}
+
 service Backend {
   rpc Hello(Empty) returns(HelloResponse);
   rpc AssetAdd(AssetAddRequest) returns(Empty);
+  rpc AssetList(Empty) returns(AssetListResponse);
   rpc AssetItemList(AssetItemListRequest) returns(AssetItemListResponse);
   rpc FileAdd(FileAddRequest) returns(Empty);
 }

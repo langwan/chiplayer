@@ -4,7 +4,7 @@ import { IconMenu2 } from "@tabler/icons";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import LeftMenu from "View/Component/LeftMenu";
-export default function MainLayout() {
+export default () => {
   const drawerWidth = 240;
   const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     ({ theme, open }) => ({
@@ -52,4 +52,4 @@ export default function MainLayout() {
       </Stack>
     </Stack>
   );
-}
+};
