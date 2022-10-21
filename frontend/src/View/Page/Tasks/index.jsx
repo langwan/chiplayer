@@ -1,8 +1,9 @@
 import { ChihuoTable } from "@chihuo/table";
 import { Box, Stack } from "@mui/material";
 import { IconFile } from "@tabler/icons";
-import { backendAxios } from "Common/Request/index";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+
 function formatFileSize(size) {
   var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
   return (
@@ -13,7 +14,7 @@ function formatFileSize(size) {
 }
 const columns = [
   {
-    field: "Name",
+    field: "name",
     headerName: "文件名",
     renderCell: (params) => (
       <Stack
@@ -22,18 +23,22 @@ const columns = [
         justifyContent="flex-start"
       >
         <IconFile stroke={1} />
-        <Box pl={1}>{params.row.Name}</Box>
+        <Box pl={1}>{params.row.name}</Box>
       </Stack>
     ),
   },
   {
-    field: "TotalBytes",
+    field: "total_bytes",
     headerName: "大小",
-    width: 140,
-    renderCell: (params) => formatFileSize(params.row.TotalBytes),
+    width: 200,
+
+    renderCell: (params) =>
+      formatFileSize(params.row.consumed_bytes) +
+      "/" +
+      formatFileSize(params.row.total_bytes),
   },
   {
-    field: "UpdatedAt",
+    field: "updated_at",
     headerName: "修改时间",
     width: 160,
     renderCell: (params) => <Box>{new Date().toLocaleString()}</Box>,
@@ -41,22 +46,11 @@ const columns = [
 ];
 
 export default () => {
-  const [rows, setRows] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
   const [cellModesModel, setCellModesModel] = useState({});
-  const load = async () => {
-    try {
-      let response = await backendAxios.post("/rpc/TaskList", {});
-      let result = response.data.body;
 
-      setRows(result);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  useEffect(() => {
-    load();
-  }, []);
+  const tasks = useSelector((state) => state.tasks.tasks);
+
   const onSelectionModelChange = (newSelection) => {
     console.log("onSelectionModelChange", newSelection);
     setSelectionModel([...newSelection]);
@@ -69,10 +63,10 @@ export default () => {
         cellModesModel={cellModesModel}
         rowHeight={40}
         headerHeight={40}
-        rows={rows}
+        rows={[...tasks]}
         columns={columns}
-        getRowId={(row) => "" + row.ID}
-        initialState={{ sorting: { field: "UpdatedAt", sort: "desc" } }}
+        getRowId={(row) => "" + row.id}
+        initialState={{ sorting: { field: "updated_at", sort: "desc" } }}
       />
     </Box>
   );

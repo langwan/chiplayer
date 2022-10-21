@@ -34,7 +34,7 @@ func httpStart(port int) {
 			AllowFiles:             false,
 		}))
 	}
-
+	NewSocketIO(g)
 	rg := g.Group("rpc")
 	rg.Any("/*uri", requestProxy())
 
@@ -44,7 +44,8 @@ func httpStart(port int) {
 	g.GET("/player/:assetName/:uri", func(c *gin.Context) {
 		assetName := c.Param("assetName")
 		uri := c.Param("uri")
-		filename := path.Join(helper.GetDefaultDataPath(), assetName, uri)
+		dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
+		filename := path.Join(dataPath, assetName, uri)
 		http.ServeFile(c.Writer, c.Request, filename)
 	})
 	g.Run(fmt.Sprintf(":%d", port))

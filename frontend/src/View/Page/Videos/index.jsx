@@ -40,7 +40,9 @@ export const Videos = (props) => {
           <Typography color="text.primary">{assetName}</Typography>
         </Breadcrumbs>
         <Button
-          onClick={(event) => setAssetNewDialogIsOpen(true)}
+          onClick={(event) => {
+            backendAxios.post("/rpc/FileAdd", { assetName });
+          }}
           startIcon={<IconFileImport stroke={0.5} />}
         >
           导入

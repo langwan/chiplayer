@@ -18,6 +18,20 @@ type Listener struct {
 func (l *Listener) ProgressChanged(event *helper_os.ProgressEvent) {
 	l.req.Task.ConsumedBytes = event.ConsumedBytes
 	sqlite.Get().Save(&l.req.Task)
+
+	var tasks []TaskModel
+	sqlite.Get().Find(&tasks)
+
+	if socketio != nil {
+		socketio.BroadcastToAll("push", &struct {
+			Method string      `json:"method"`
+			Body   interface{} `json:"body"`
+		}{
+			Method: "tasks",
+			Body:   tasks,
+		})
+	}
+
 	return
 }
 
@@ -30,7 +44,7 @@ func Worker(id int, jobs <-chan *Request) {
 		listener := Listener{req: req}
 		buf := make([]byte, 1024*1024)
 		var err error
-		if Preferences.GetBool(IsMove, true) {
+		if Preferences.GetBool(IsMove, false) {
 			_, err = helper_os.MoveFileWatcher(req.Task.DstPath, req.Task.LocalPath, buf, &listener)
 		} else {
 			_, err = helper_os.CopyFileWatcher(req.Task.DstPath, req.Task.LocalPath, buf, &listener)

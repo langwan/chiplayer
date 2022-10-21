@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/langwan/langgo/components/sqlite"
 	helper_os "github.com/langwan/langgo/helpers/os"
+	"github.com/ncruces/zenity"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"os"
@@ -74,28 +75,39 @@ func (b BackendService) AssetItemList(ctx context.Context, request *pb.AssetItem
 }
 
 func (b BackendService) FileAdd(ctx context.Context, request *pb.FileAddRequest) (*pb.Empty, error) {
-	if !helper_os.FileExists(request.GetFilePath()) {
-		return &pb.Empty{}, status.Error(codes.NotFound, "文件不存在")
+
+	files, err := zenity.SelectFileMultiple(
+		zenity.FileFilters{
+			{"选择导入的视频文件", []string{"*.*"}},
+		})
+	if err != nil {
+		return nil, err
+	}
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
+
+	for _, f := range files {
+		if !helper_os.FileExists(f) {
+			continue
+		}
+		filename := filepath.Base(f)
+		dst := filepath.Join(dataPath, request.GetAssetName(), filename)
+		task := TaskModel{
+			AssetName:     request.GetAssetName(),
+			Name:          filename,
+			LocalPath:     f,
+			DstPath:       dst,
+			TotalBytes:    0,
+			ConsumedBytes: 0,
+			IsCompleted:   false,
+			Error:         "",
+		}
+		err := TaskAdd(&task)
+		if err != nil {
+			continue
+		}
+		go RequestStart(&task)
 	}
 
-	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
-	filename := filepath.Base(request.GetFilePath())
-	dst := filepath.Join(dataPath, request.GetAssetName(), filename)
-	task := TaskModel{
-		AssetName:     request.GetAssetName(),
-		Name:          filename,
-		LocalPath:     request.GetFilePath(),
-		DstPath:       dst,
-		TotalBytes:    0,
-		ConsumedBytes: 0,
-		IsCompleted:   false,
-		Error:         "",
-	}
-	err := TaskAdd(&task)
-	if err != nil {
-		return nil, status.Errorf(codes.Aborted, "%v", err)
-	}
-	go RequestStart(&task)
 	return &pb.Empty{}, nil
 }
 

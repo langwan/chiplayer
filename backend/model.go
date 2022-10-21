@@ -8,13 +8,13 @@ type PreferenceModel struct {
 }
 
 type TaskModel struct {
-	gorm.Model
-	AssetName     string
-	Name          string
-	LocalPath     string
-	DstPath       string
-	TotalBytes    int64
-	ConsumedBytes int64
-	IsCompleted   bool
-	Error         string
+	gorm.Model    `json:"gorm_._model"`
+	AssetName     string `json:"asset_name"`
+	Name          string `json:"name"`
+	LocalPath     string `json:"local_path"`
+	DstPath       string `json:"dst_path"`
+	TotalBytes    int64  `json:"total_bytes"`
+	ConsumedBytes int64  `json:"consumed_bytes"`
+	IsCompleted   bool   `json:"is_completed"`
+	Error         string `json:"error"`
 }

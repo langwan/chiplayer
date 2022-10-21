@@ -21,7 +21,7 @@ func main() {
 	var port int
 	flag.IntVar(&port, "port", 8000, "port")
 	flag.Parse()
-
+	WorkerStart()
 	//dbPath := path.Join(helper.GetAppStorePath(), "db.db")
 	//langgo.RunComponent(&sqlite.Instance{Path: dbPath})
 	core.GetComponentConfiguration("app", &app.Configuration)
