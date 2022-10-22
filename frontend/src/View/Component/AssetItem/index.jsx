@@ -19,7 +19,11 @@ export default function AssetItem(props) {
     >
       <CardMedia
         sx={{ height: 260, objectFit: "cover" }}
-        src={process.env.PUBLIC_URL + "/res/cover.mov"}
+        src={
+          props.cover
+            ? `${props.cover}#t=5,20`
+            : process.env.PUBLIC_URL + "/res/cover.mov"
+        }
         component="video"
       />
       <CardContent>

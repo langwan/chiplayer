@@ -13,7 +13,7 @@ func init() {
 	dbName := helper.GetDatabasePath()
 	langgo.Run(&sqlite.Instance{Path: dbName})
 	if core.EnvName == core.Development {
-		sqlite.Get().AutoMigrate(&PreferenceModel{}, &TaskModel{})
+		sqlite.Get().AutoMigrate(&PreferenceModel{}, &TaskModel{}, &AssetModel{})
 	}
 }
 
@@ -22,8 +22,6 @@ func main() {
 	flag.IntVar(&port, "port", 8000, "port")
 	flag.Parse()
 	WorkerStart()
-	//dbPath := path.Join(helper.GetAppStorePath(), "db.db")
-	//langgo.RunComponent(&sqlite.Instance{Path: dbPath})
 	core.GetComponentConfiguration("app", &app.Configuration)
 	httpStart(port)
 }

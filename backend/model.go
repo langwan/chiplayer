@@ -18,3 +18,8 @@ type TaskModel struct {
 	IsCompleted   bool   `json:"is_completed"`
 	Error         string `json:"error"`
 }
+
+type AssetModel struct {
+	Name  string `json:"name";gorm:"primaryKey"`
+	Cover string `json:"cover"`
+}

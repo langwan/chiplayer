@@ -26,14 +26,25 @@ func (b BackendService) TaskList(ctx context.Context, empty *pb.Empty) (tasks []
 	}
 	return tasks, res.Error
 }
-func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*pb.AssetListResponse, error) {
+
+type AssetListItem struct {
+	Name    string `json:"name"`
+	ModTime int64  `json:"mod_time"`
+	Cover   string `json:"cover"`
+}
+
+type AssetListResponse struct {
+	Assets []*AssetListItem `json:"assets"`
+}
+
+func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*AssetListResponse, error) {
 
 	files, err := os.ReadDir(helper.GetDefaultDataPath())
 	if err != nil {
 		return nil, err
 	}
-	response := pb.AssetListResponse{}
-
+	response := AssetListResponse{}
+	var assetNames []string
 	for _, file := range files {
 		if file.Name() == ".DS_Store" {
 			continue
@@ -42,11 +53,26 @@ func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*pb.Ass
 		if err != nil {
 			continue
 		}
-		response.Assets = append(response.Assets, &pb.Asset{
+		response.Assets = append(response.Assets, &AssetListItem{
 			Name:    file.Name(),
 			ModTime: info.ModTime().UnixNano(),
 		})
+		assetNames = append(assetNames, file.Name())
 	}
+
+	var models []*AssetModel
+	res := sqlite.Get().Find(&models, "name in ?", assetNames)
+	if res.RowsAffected > 0 {
+		for _, model := range models {
+			for _, asset := range response.Assets {
+				if asset.Name == model.Name {
+					asset.Cover = model.Cover
+					break
+				}
+			}
+		}
+	}
+
 	return &response, nil
 }
 

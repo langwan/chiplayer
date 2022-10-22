@@ -63,7 +63,7 @@ export default function Assets() {
                 onClick={(event) => {
                   navigate(`/videos/${asset.name}`);
                 }}
-                cover={"test/1.jpg"}
+                cover={asset.cover}
                 title={asset.name}
               />
             </Grid>
