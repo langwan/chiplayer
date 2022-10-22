@@ -5,9 +5,6 @@ import (
 	"github.com/langwan/langgo/components/sqlite"
 	"github.com/langwan/langgo/core/log"
 	helper_os "github.com/langwan/langgo/helpers/os"
-	helperString "github.com/langwan/langgo/helpers/string"
-	"path"
-	"path/filepath"
 )
 
 const workers = 10
@@ -55,25 +52,7 @@ func Worker(id int, jobs <-chan *Request) {
 		if err != nil {
 			req.Failed <- err
 		} else {
-			asset := AssetModel{}
-			res := sqlite.Get().First(&asset, "name=?", req.Task.AssetName)
-			if res.RowsAffected == 0 {
-				dstName := filepath.Base(req.Task.DstPath)
-				playerUri := path.Join("/player", req.Task.AssetName, dstName)
 
-				asset = AssetModel{
-					Name:  req.Task.AssetName,
-					Cover: playerUri,
-				}
-				sqlite.Get().Create(&asset)
-			} else {
-				if helperString.IsEmpty(asset.Name) {
-					dstName := filepath.Base(req.Task.DstPath)
-					playerUri := path.Join("/player", req.Task.AssetName, dstName)
-					asset.Cover = playerUri
-					sqlite.Get().Save(&asset)
-				}
-			}
 			req.Result <- struct{}{}
 		}
 	}

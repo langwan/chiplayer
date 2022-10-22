@@ -13,6 +13,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 )
 
 type BackendService struct {
@@ -98,6 +99,11 @@ func (b BackendService) AssetItemList(ctx context.Context, request *pb.AssetItem
 			PlayerUri: path.Join("/player", request.GetAssetName(), file.Name()),
 		})
 	}
+
+	sort.Slice(response.Items, func(i, j int) bool {
+		return response.Items[i].ModTime > response.Items[j].ModTime
+	})
+
 	return &response, nil
 }
 
@@ -166,7 +172,7 @@ func (b BackendService) OpenDataFile(ctx context.Context, request *OpenDataFileR
 
 func (b BackendService) EraserAll(ctx context.Context, empty *pb.Empty) (*pb.Empty, error) {
 	var tasks []TaskModel
-	sqlite.Get().Unscoped().Delete(&tasks)
+	sqlite.Get().Where("1 = 1").Unscoped().Delete(&tasks)
 	go PushMessageTasks()
 	return &pb.Empty{}, nil
 }

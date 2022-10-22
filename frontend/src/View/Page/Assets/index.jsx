@@ -58,7 +58,7 @@ export default function Assets() {
       <Grid container spacing={1}>
         {assets &&
           assets.map((asset) => (
-            <Grid item xs={12} sm={6} md={4} lg={3}>
+            <Grid item xs={12} sm={6} md={6} lg={3}>
               <AssetItem
                 onClick={(event) => {
                   navigate(`/videos/${asset.name}`);

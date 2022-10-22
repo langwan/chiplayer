@@ -3,7 +3,11 @@ package main
 import (
 	"errors"
 	"github.com/langwan/langgo/components/sqlite"
+	helper_gen "github.com/langwan/langgo/helpers/gen"
 	"github.com/langwan/langgo/helpers/os"
+	helperString "github.com/langwan/langgo/helpers/string"
+	"path"
+	"path/filepath"
 	"sync"
 )
 
@@ -26,6 +30,7 @@ func TaskAdd(task *TaskModel) error {
 }
 
 type Request struct {
+	Id     string
 	TaskId uint
 	Task   *TaskModel
 	Result chan struct{}
@@ -45,7 +50,7 @@ func RequestStart(task *TaskModel) (err error) {
 		return errors.New("任务已经开始，还在执行")
 	}
 
-	req = &Request{TaskId: task.ID, Task: task, Result: make(chan struct{}), Failed: make(chan error)}
+	req = &Request{Id: helper_gen.UuidShort(), TaskId: task.ID, Task: task, Result: make(chan struct{}), Failed: make(chan error)}
 	Requests.Store(task.ID, req)
 
 	go func() {
@@ -65,6 +70,28 @@ func RequestStart(task *TaskModel) (err error) {
 	task.IsCompleted = true
 	sqlite.Get().Save(task)
 
+	asset := AssetModel{}
+	res := sqlite.Get().First(&asset, "name=?", req.Task.AssetName)
+	if res.RowsAffected == 0 {
+		dstName := filepath.Base(req.Task.DstPath)
+		playerUri := path.Join("/player", req.Task.AssetName, dstName)
+
+		asset = AssetModel{
+			Name:  req.Task.AssetName,
+			Cover: playerUri,
+		}
+		sqlite.Get().Create(&asset)
+	} else {
+		if helperString.IsEmpty(asset.Name) {
+			dstName := filepath.Base(req.Task.DstPath)
+			playerUri := path.Join("/player", req.Task.AssetName, dstName)
+			asset.Cover = playerUri
+			sqlite.Get().Save(&asset)
+		}
+	}
+
+	PushMessageVideos()
+	
 	return err
 }
 

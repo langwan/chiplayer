@@ -1,6 +1,7 @@
 import { Breadcrumbs, Button, Link, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { IconFileImport } from "@tabler/icons";
+import { sioPushRegister, sioPushUnRegister } from "App";
 import { backendAxios } from "Common/Request";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,12 +10,12 @@ import VideoItem from "../../Component/VideoItem/index";
 export const Videos = (props) => {
   const [items, setItems] = useState([]);
   let { assetName } = useParams();
+
   const loader = async () => {
     try {
       const response = await backendAxios.post("/rpc/AssetItemList", {
         assetName,
       });
-      console.log("loader response");
       if ("items" in response.data.body) {
         return setItems(response.data.body.items);
       } else {
@@ -24,6 +25,10 @@ export const Videos = (props) => {
   };
   useEffect(() => {
     loader();
+    sioPushRegister("videos", loader);
+    return () => {
+      sioPushUnRegister("videos", loader);
+    };
   }, []);
 
   return (

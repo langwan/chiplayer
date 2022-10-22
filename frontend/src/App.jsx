@@ -12,6 +12,28 @@ const sio = io(
     reconnect: true,
   }
 );
+
+let pushCallbacks = {};
+
+export const sioPushRegister = (method, callback) => {
+  if (!pushCallbacks[method]) {
+    pushCallbacks[method] = [callback];
+  } else {
+    pushCallbacks[method].push(callback);
+  }
+  console.log("sioPushRegister", pushCallbacks);
+};
+
+export const sioPushUnRegister = (method, callback) => {
+  if (pushCallbacks[method]) {
+    for (let i in pushCallbacks[method]) {
+      if (pushCallbacks[method][i] == callback) {
+        pushCallbacks[method].splice(i, 1);
+      }
+    }
+  }
+};
+
 export default () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -20,8 +42,15 @@ export default () => {
     });
     sio.on("push", (message) => {
       console.log("message", message);
+
       if (message.method == "tasks") {
         dispatch(setTasks(message.body));
+      } else {
+        if (pushCallbacks[message.method]) {
+          pushCallbacks[message.method].forEach((element) => {
+            element(message.body);
+          });
+        }
       }
     });
     sio.on("hello", (message) => {
