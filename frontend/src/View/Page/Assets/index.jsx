@@ -1,9 +1,10 @@
+import { ChihuoSelection } from "@chihuo/selection";
 import { Button, Paper, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import { IconPlus } from "@tabler/icons";
 import { backendAxios } from "Common/Request";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AssetNewDialog from "View/Dialog/AssetNew";
 import AssetItem from "../../Component/AssetItem/index";
@@ -16,6 +17,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Assets() {
+  const [selectionModel, setSelectionModel] = useState([]);
+  const gridRef = useRef();
   const [assetNewDialogIsOpen, setAssetNewDialogIsOpen] = useState(false);
   const onSubmitAssetNewDialog = async (event) => {
     setAssetNewDialogIsOpen(false);
@@ -39,7 +42,9 @@ export default function Assets() {
   useEffect(() => {
     load();
   }, []);
-
+  const onSelectionModelChange = (newSelection) => {
+    setSelectionModel([...newSelection]);
+  };
   return (
     <Stack direction={"column"} justifyContent="space-between">
       <Stack
@@ -55,20 +60,28 @@ export default function Assets() {
           新建
         </Button>
       </Stack>
-      <Grid container spacing={1}>
-        {assets &&
-          assets.map((asset) => (
-            <Grid item xs={12} sm={6} md={6} lg={3}>
-              <AssetItem
-                onClick={(event) => {
-                  navigate(`/videos/${asset.name}`);
-                }}
-                cover={asset.cover}
-                title={asset.name}
-              />
-            </Grid>
-          ))}
-      </Grid>
+      <ChihuoSelection
+        selectionModel={selectionModel}
+        onSelectionModelChange={onSelectionModelChange}
+        itemsRef={gridRef}
+      >
+        <Grid container ref={gridRef} spacing={1}>
+          {assets &&
+            assets.map((asset) => (
+              <Grid item xs={12} sm={6} md={6} lg={3}>
+                <AssetItem
+                  onClick={(event) => {
+                    navigate(`/videos/${asset.name}`);
+                  }}
+                  checked={selectionModel.includes(asset.name)}
+                  cover={asset.cover}
+                  title={asset.name}
+                  path={asset.path}
+                />
+              </Grid>
+            ))}
+        </Grid>
+      </ChihuoSelection>
       <AssetNewDialog
         open={assetNewDialogIsOpen}
         maxWidth={"xs"}

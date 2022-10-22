@@ -17,7 +17,6 @@ import VideoItem from "../../Component/VideoItem/index";
 export const Videos = (props) => {
   const [items, setItems] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
-  const [selectionRect, setSelectionRect] = useState(null);
   const gridRef = useRef();
   let { assetName } = useParams();
 
@@ -41,20 +40,6 @@ export const Videos = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    //if (selectionRect == null) return;
-    let sels = [];
-    if (gridRef.current && gridRef.current.children) {
-      for (const child of gridRef.current.children) {
-        const result = itemInBox(selectionRect, child);
-        if (result) {
-          const key = child.getAttribute("data-key");
-          sels.push(key);
-        }
-      }
-    }
-    setSelectionModel(sels);
-  }, [selectionRect]);
   const onSelectionModelChange = (models) => {
     setSelectionModel([...models]);
   };

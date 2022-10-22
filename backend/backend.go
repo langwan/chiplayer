@@ -32,6 +32,7 @@ type AssetListItem struct {
 	Name    string `json:"name"`
 	ModTime int64  `json:"mod_time"`
 	Cover   string `json:"cover"`
+	Path    string `json:"path"`
 }
 
 type AssetListResponse struct {
@@ -39,8 +40,9 @@ type AssetListResponse struct {
 }
 
 func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*AssetListResponse, error) {
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
 
-	files, err := os.ReadDir(helper.GetDefaultDataPath())
+	files, err := os.ReadDir(dataPath)
 	if err != nil {
 		return nil, err
 	}
@@ -54,10 +56,13 @@ func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*AssetL
 		if err != nil {
 			continue
 		}
+
 		response.Assets = append(response.Assets, &AssetListItem{
 			Name:    file.Name(),
 			ModTime: info.ModTime().UnixNano(),
+			Path:    filepath.Join(dataPath, file.Name()),
 		})
+		
 		assetNames = append(assetNames, file.Name())
 	}
 
@@ -68,6 +73,7 @@ func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*AssetL
 			for _, asset := range response.Assets {
 				if asset.Name == model.Name {
 					asset.Cover = model.Cover
+
 					break
 				}
 			}

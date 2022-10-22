@@ -79,7 +79,6 @@ export default () => {
   const tasks = useSelector((state) => state.tasks.tasks);
 
   const onSelectionModelChange = (newSelection) => {
-    console.log("onSelectionModelChange", newSelection);
     setSelectionModel([...newSelection]);
   };
   return (
