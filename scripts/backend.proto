@@ -30,6 +30,7 @@ message Item {
   int64 fileSize = 3;
   int64 modTime = 4;
   string playerUri = 5;
+  string path = 6;
 }
 
 message AssetItemListResponse {
@@ -54,5 +55,5 @@ service Backend {
   rpc AssetItemList(AssetItemListRequest) returns(AssetItemListResponse);
   rpc FileAdd(FileAddRequest) returns(Empty);
   rpc FileBackend(FileAddRequest) returns(Empty);
-  rpc TaskList(Empty) returns(TaskListResponse);
+
 }

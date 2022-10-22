@@ -18,7 +18,7 @@ export default function AssetItem(props) {
       }}
     >
       <CardMedia
-        sx={{ height: 260, objectFit: "cover" }}
+        sx={{ height: "auto", objectFit: "cover" }}
         src={
           props.cover
             ? `${props.cover}#t=5,20`

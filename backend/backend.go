@@ -97,6 +97,7 @@ func (b BackendService) AssetItemList(ctx context.Context, request *pb.AssetItem
 			FileSize:  info.Size(),
 			ModTime:   info.ModTime().UnixNano(),
 			PlayerUri: path.Join("/player", request.GetAssetName(), file.Name()),
+			Path:      filepath.Join(assetPath, file.Name()),
 		})
 	}
 

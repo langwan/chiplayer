@@ -56,7 +56,7 @@ export const Videos = (props) => {
       <Grid container spacing={1}>
         {items &&
           items.map((video) => (
-            <Grid item xs={12} sm={6} md={4} lg={3}>
+            <Grid key={video.name} item xs={12} sm={6} md={4} lg={3}>
               <VideoItem video={video} />
             </Grid>
           ))}
