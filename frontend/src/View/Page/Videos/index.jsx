@@ -1,4 +1,11 @@
-import { Breadcrumbs, Button, Link, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Link,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { IconFileImport } from "@tabler/icons";
 import { sioPushRegister, sioPushUnRegister } from "App";
@@ -34,7 +41,7 @@ export const Videos = (props) => {
   }, []);
 
   useEffect(() => {
-    if (selectionRect == null) return;
+    //if (selectionRect == null) return;
     let sels = [];
     if (gridRef.current && gridRef.current.children) {
       for (const child of gridRef.current.children) {
@@ -45,12 +52,15 @@ export const Videos = (props) => {
         }
       }
     }
-    console.log("sels", sels);
     setSelectionModel(sels);
   }, [selectionRect]);
 
   return (
-    <Stack direction={"column"} justifyContent="space-between">
+    <Stack
+      direction={"column"}
+      sx={{ height: "100%" }}
+      justifyContent="flex-start"
+    >
       <Stack
         direction={"row"}
         alignItems="center"
@@ -71,27 +81,36 @@ export const Videos = (props) => {
           导入
         </Button>
       </Stack>
-      <ChihuoSelection setRect={setSelectionRect} rect={selectionRect}>
-        <Grid container spacing={2} ref={gridRef}>
-          {items &&
-            items.map((video) => (
-              <Grid
-                key={video.name}
-                data-key={video.name}
-                item
-                xs={12}
-                sm={6}
-                md={4}
-                lg={3}
-              >
-                <VideoItem
-                  checked={selectionModel.includes(video.name)}
-                  video={video}
-                />
-              </Grid>
-            ))}
-        </Grid>
-      </ChihuoSelection>
+      <Box sx={{ flexGrow: 1 }}>
+        <ChihuoSelection
+          selectionModel={selectionModel}
+          onSelectionModelChange={(models) => {
+            console.log("onSelectionModelChange", models);
+            setSelectionModel(models);
+          }}
+          itemsRef={gridRef}
+        >
+          <Grid container spacing={2} ref={gridRef}>
+            {items &&
+              items.map((video) => (
+                <Grid
+                  key={video.name}
+                  data-key={video.name}
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                >
+                  <VideoItem
+                    checked={selectionModel.includes(video.name)}
+                    video={video}
+                  />
+                </Grid>
+              ))}
+          </Grid>
+        </ChihuoSelection>
+      </Box>
     </Stack>
   );
 };

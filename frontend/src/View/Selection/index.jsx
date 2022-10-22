@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 let startPoint = null;
 
 export const itemInBox = (rect, itemDom) => {
@@ -14,6 +14,20 @@ export const itemInBox = (rect, itemDom) => {
     return true;
   }
   return false;
+};
+
+const pointInItem = (point, el) => {
+  const itemRect = el.getBoundingClientRect();
+  if (
+    point.x >= itemRect.left &&
+    point.x <= itemRect.right &&
+    point.y >= itemRect.top &&
+    point.y <= itemRect.bottom
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 const calculateSelectionBox = (startPoint, endPoint, current) => {
@@ -39,21 +53,63 @@ const calculateSelectionBox = (startPoint, endPoint, current) => {
   return rect;
 };
 
-export const ChihuoSelection = ({ setRect, rect, children }) => {
+export const ChihuoSelection = ({
+  getItemElement,
+  selectionModel,
+  setRect,
+  rect,
+  itemsRef,
+  onSelectionModelChange,
+  children,
+}) => {
+  const [selectionRect, setSelectionRect] = useState(null);
   const ref = useRef();
   const onMouseDown = (event) => {
-    if (startPoint == null) {
-      console.log("onMouseDown", "setStartPoint");
-      startPoint = {
-        x: event.clientX,
-        y: event.clientY,
-      };
+    event.stopPropagation();
+    event.preventDefault();
+    startPoint = null;
+    setSelectionRect(null);
+
+    let find = null;
+    for (let el of itemsRef.current.children) {
+      let key = el.getAttribute("data-key");
+      let result = pointInItem(
+        {
+          x: event.clientX,
+          y: event.clientY,
+        },
+        el
+      );
+      if (result) {
+        find = key;
+        break;
+      }
+    }
+    console.log("onSelectionModelChange", find);
+    if (find == null) {
+      onSelectionModelChange([]);
+    } else {
+      onSelectionModelChange([find]);
     }
   };
 
   const onMouseMove = (event) => {
-    if (startPoint) {
-      let result = calculateSelectionBox(
+    if (event.which != 1) {
+      if (startPoint != null) {
+        startPoint = null;
+        setSelectionRect(null);
+      }
+    } else {
+      event.stopPropagation();
+      event.preventDefault();
+      if (startPoint == null) {
+        startPoint = {
+          x: event.clientX,
+          y: event.clientY,
+        };
+      }
+
+      let rect = calculateSelectionBox(
         startPoint,
         {
           x: event.clientX,
@@ -61,13 +117,26 @@ export const ChihuoSelection = ({ setRect, rect, children }) => {
         },
         ref.current
       );
-      setRect(result);
+      setSelectionRect(rect);
+      var models = [];
+      for (let el of itemsRef.current.children) {
+        let key = el.getAttribute("data-key");
+        let result = itemInBox(rect, el);
+        if (result) {
+          find = key;
+          models.push(key);
+        }
+      }
+      onSelectionModelChange(models);
     }
   };
 
   const onMouseUp = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
     startPoint = null;
-    setRect(null);
+    setSelectionRect(null);
+    //setRect(null);
   };
 
   useEffect(() => {
@@ -80,7 +149,7 @@ export const ChihuoSelection = ({ setRect, rect, children }) => {
   }, []);
 
   const renderSelectionBox = () => {
-    if (!rect) {
+    if (selectionRect == null) {
       return null;
     }
 
@@ -93,19 +162,23 @@ export const ChihuoSelection = ({ setRect, rect, children }) => {
       willChange: "transform",
 
       cursor: "zoom-in",
-      left: rect.left,
-      top: rect.top,
-      width: rect.width,
-      height: rect.height,
+      left: selectionRect.left,
+      top: selectionRect.top,
+      width: selectionRect.width,
+      height: selectionRect.height,
     };
 
     return <div style={style}></div>;
   };
 
   return (
-    <div onMouseDown={onMouseDown} ref={ref}>
+    <div style={{ height: "100%" }} onMouseDown={onMouseDown} ref={ref}>
       {children}
       {renderSelectionBox()}
     </div>
   );
+};
+
+ChihuoSelection.defaultProps = {
+  onSelectionModelChange: (models) => {},
 };

@@ -27,7 +27,7 @@ export default () => {
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(true);
   return (
     <Stack
-      sx={{ backgroundColor: "#F5F5F5" }}
+      sx={{ backgroundColor: "#F5F5F5", height: "100%" }}
       direction={"column"}
       justifyContent={"flex-start"}
     >
@@ -41,7 +41,11 @@ export default () => {
           <IconMenu2 stroke={0.5} />
         </IconButton>
       </Box>
-      <Stack direction={"row"} justifyContent="space-between">
+      <Stack
+        sx={{ flexGrow: 1 }}
+        direction={"row"}
+        justifyContent="space-between"
+      >
         <LeftMenu open={isLeftMenuOpen} drawerWidth={drawerWidth} />
         <Main
           sx={{ backgroundColor: "#fff", padding: 1 }}
