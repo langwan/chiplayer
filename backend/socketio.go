@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	gosocketio "github.com/ambelovsky/gosf-socketio"
 	"github.com/ambelovsky/gosf-socketio/transport"
 	"github.com/gin-gonic/gin"
@@ -36,32 +35,35 @@ func NewSocketIO(g *gin.Engine) {
 	socketio.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
 		log.Logger("app", "socketio").Info().Str("id", c.Id()).Msg("OnConnection")
 		c.Emit("hello", "im ss")
-		var tasks []TaskModel
-		sqlite.Get().Find(&tasks)
-
-		messageTask := make([]MessageTask, len(tasks))
-		i := 0
-		for _, task := range tasks {
-			messageTask[i] = MessageTask{
-				Id:            task.ID,
-				UpdatedAt:     task.UpdatedAt,
-				AssetName:     task.AssetName,
-				Name:          task.Name,
-				LocalPath:     task.LocalPath,
-				DstPath:       task.DstPath,
-				TotalBytes:    task.TotalBytes,
-				ConsumedBytes: task.ConsumedBytes,
-				IsCompleted:   task.IsCompleted,
-				Error:         task.Error,
-			}
-			i++
-		}
-		message := Message{
-			Method: "tasks",
-			Body:   messageTask,
-		}
-		socketio.BroadcastToAll("push", message)
-		fmt.Printf("%+v", message)
-		log.Logger("app", "socketio").Info().Interface("message", message).Msg("push")
+		go PushMessageTasks()
 	})
+}
+
+func PushMessageTasks() {
+	var tasks []TaskModel
+	sqlite.Get().Find(&tasks)
+
+	messageTask := make([]MessageTask, len(tasks))
+	i := 0
+	for _, task := range tasks {
+		messageTask[i] = MessageTask{
+			Id:            task.ID,
+			UpdatedAt:     task.UpdatedAt,
+			AssetName:     task.AssetName,
+			Name:          task.Name,
+			LocalPath:     task.LocalPath,
+			DstPath:       task.DstPath,
+			TotalBytes:    task.TotalBytes,
+			ConsumedBytes: task.ConsumedBytes,
+			IsCompleted:   task.IsCompleted,
+			Error:         task.Error,
+		}
+		i++
+	}
+	message := Message{
+		Method: "tasks",
+		Body:   messageTask,
+	}
+	socketio.BroadcastToAll("push", message)
+	log.Logger("app", "socketio").Info().Interface("message", message).Msg("push")
 }

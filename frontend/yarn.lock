@@ -1084,10 +1084,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chihuo/table@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@chihuo/table/-/table-1.0.3.tgz#e290da54b2af618cd83445977b4f3f2d6255ae9d"
-  integrity sha512-Jf1JV4L5hUkTPE89cbDQnTLg9VsCp/pdy7BcDCrFiklqGRFLIhpAZ+V1fyV2xwRU8zXgDGRaVpXWBYgBaXAItw==
+"@chihuo/table@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@chihuo/table/-/table-1.0.6.tgz#82ab8ebbec0dbb8e0e9bf2bcc64f4d722ddadf31"
+  integrity sha512-zcNFwO87S6+KgJzYZfEeGNPih/m6znoyfqeAzZ0ylJhAtyZOVt4n5czamZjcgCI0qEKkVw/7q7k4HW42zle6tQ==
   dependencies:
     "@emotion/react" "^11.10.4"
     "@emotion/styled" "^11.10.4"

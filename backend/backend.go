@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/langwan/langgo/components/sqlite"
 	helper_os "github.com/langwan/langgo/helpers/os"
+	helper_platform "github.com/langwan/langgo/helpers/platform"
 	"github.com/ncruces/zenity"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -126,4 +127,31 @@ func (b BackendService) AssetAdd(ctx context.Context, request *pb.AssetAddReques
 
 func (b BackendService) Hello(ctx context.Context, empty *pb.Empty) (*pb.HelloResponse, error) {
 	return &pb.HelloResponse{Message: "hello"}, nil
+}
+
+type OpenDataFileRequest struct {
+	Path string `json:"path"`
+}
+
+func (b BackendService) OpenDataFile(ctx context.Context, request *OpenDataFileRequest) (*pb.Empty, error) {
+	helper_platform.OpenFileExplorer(request.Path)
+	return &pb.Empty{}, nil
+}
+
+func (b BackendService) EraserAll(ctx context.Context, empty *pb.Empty) (*pb.Empty, error) {
+	var tasks []TaskModel
+	sqlite.Get().Unscoped().Delete(&tasks)
+	go PushMessageTasks()
+	return &pb.Empty{}, nil
+}
+
+type EraserRequest struct {
+	Ids []string `json:"ids"`
+}
+
+func (b BackendService) Eraser(ctx context.Context, request *EraserRequest) (*pb.Empty, error) {
+	var tasks []TaskModel
+	sqlite.Get().Unscoped().Delete(&tasks, "id in ?", request.Ids)
+	go PushMessageTasks()
+	return &pb.Empty{}, nil
 }

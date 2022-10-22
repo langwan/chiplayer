@@ -7,7 +7,7 @@ require (
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/json-iterator/go v1.1.12
-	github.com/langwan/langgo v0.5.7
+	github.com/langwan/langgo v0.5.8
 	github.com/ncruces/zenity v0.9.0
 	github.com/stretchr/testify v1.8.0
 	google.golang.org/grpc v1.49.0
@@ -41,6 +41,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/randall77/makefat v0.0.0-20210315173500-7ddd0e42c844 // indirect
 	github.com/rs/zerolog v1.28.0 // indirect
+	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/crypto v0.0.0-20221012134737-56aed061732a // indirect
 	golang.org/x/image v0.1.0 // indirect
