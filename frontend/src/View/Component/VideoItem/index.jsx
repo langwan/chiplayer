@@ -12,8 +12,11 @@ export default function VideoItem(props) {
       sx={{
         "&.MuiCard-root": {
           boxShadow: "none",
-          backgroundColor: props.checked ? "#1F94FE" : "#F5F5F5",
+          borderRadius: 0,
+          border: props.checked ? "4px solid #24A7F2" : "none",
+          backgroundColor: props.checked ? "#24A7F2" : "#F5F5F5",
           color: props.checked ? "#fff" : "",
+          margin: props.checked ? "0" : "4px",
         },
 
         "& .MuiCardContent-root:last-child": {
@@ -37,7 +40,11 @@ export default function VideoItem(props) {
           justifyContent={"space-between"}
           alignItems="center"
         >
-          <Typography variant="h5" component="div">
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{ color: props.checked ? "white" : "" }}
+          >
             {props.video.name}
           </Typography>
           <IconButton
@@ -47,7 +54,12 @@ export default function VideoItem(props) {
               });
             }}
           >
-            <IconSearch stroke={1} width={16} height={16} />
+            <IconSearch
+              color={props.checked ? "white" : "#677684"}
+              stroke={1.4}
+              width={16}
+              height={16}
+            />
           </IconButton>
         </Stack>
       </CardContent>

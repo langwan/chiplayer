@@ -1084,6 +1084,13 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@chihuo/selection@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@chihuo/selection/-/selection-1.0.2.tgz#6e5e93e4eb30e7888887e07862b4cd9b26246baa"
+  integrity sha512-cvBVnmzFRLeMrgthva0KRKt2F6YyPPn+aFYn3U0kDQhMEUp8g+Kl36zntntgJpoexBJuuPTk0v95RYUmEV2pIQ==
+  dependencies:
+    react "^18.2.0"
+
 "@chihuo/table@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@chihuo/table/-/table-1.0.6.tgz#82ab8ebbec0dbb8e0e9bf2bcc64f4d722ddadf31"

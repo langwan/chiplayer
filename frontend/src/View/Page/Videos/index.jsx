@@ -1,3 +1,4 @@
+import { ChihuoSelection } from "@chihuo/selection";
 import {
   Box,
   Breadcrumbs,
@@ -7,19 +8,19 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import { IconFileImport } from "@tabler/icons";
+import { IconFileImport, IconTrash } from "@tabler/icons";
 import { sioPushRegister, sioPushUnRegister } from "App";
 import { backendAxios } from "Common/Request";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ChihuoSelection, itemInBox } from "View/Selection";
 import VideoItem from "../../Component/VideoItem/index";
 export const Videos = (props) => {
   const [items, setItems] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
+  const [selectionRect, setSelectionRect] = useState(null);
   const gridRef = useRef();
   let { assetName } = useParams();
-  const [selectionRect, setSelectionRect] = useState(null);
+
   const loader = async () => {
     try {
       const response = await backendAxios.post("/rpc/AssetItemList", {
@@ -54,6 +55,9 @@ export const Videos = (props) => {
     }
     setSelectionModel(sels);
   }, [selectionRect]);
+  const onSelectionModelChange = (models) => {
+    setSelectionModel([...models]);
+  };
 
   return (
     <Stack
@@ -72,25 +76,34 @@ export const Videos = (props) => {
           </Link>
           <Typography color="text.primary">{assetName}</Typography>
         </Breadcrumbs>
-        <Button
-          onClick={(event) => {
-            backendAxios.post("/rpc/FileAdd", { assetName });
-          }}
-          startIcon={<IconFileImport stroke={0.5} />}
-        >
-          导入
-        </Button>
+        <Box>
+          {selectionModel.length > 0 && (
+            <Button
+              onClick={(event) => {
+                backendAxios.post("/rpc/FileAdd", { assetName });
+              }}
+              startIcon={<IconTrash stroke={0.5} />}
+            >
+              {selectionModel.length == items.length && "全部"}删除
+            </Button>
+          )}
+          <Button
+            onClick={(event) => {
+              backendAxios.post("/rpc/FileAdd", { assetName });
+            }}
+            startIcon={<IconFileImport stroke={0.5} />}
+          >
+            导入
+          </Button>
+        </Box>
       </Stack>
       <Box sx={{ flexGrow: 1 }}>
         <ChihuoSelection
           selectionModel={selectionModel}
-          onSelectionModelChange={(models) => {
-            console.log("onSelectionModelChange", models);
-            setSelectionModel(models);
-          }}
+          onSelectionModelChange={onSelectionModelChange}
           itemsRef={gridRef}
         >
-          <Grid container spacing={2} ref={gridRef}>
+          <Grid container spacing={4} ref={gridRef}>
             {items &&
               items.map((video) => (
                 <Grid
