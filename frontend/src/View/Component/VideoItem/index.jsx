@@ -12,7 +12,7 @@ export default function VideoItem(props) {
       sx={{
         "&.MuiCard-root": {
           boxShadow: "none",
-          backgroundColor: "#F5F5F5",
+          backgroundColor: props.checked ? "#5DAFD6" : "#F5F5F5",
         },
 
         "& .MuiCardContent-root:last-child": {
