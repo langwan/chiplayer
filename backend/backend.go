@@ -62,7 +62,7 @@ func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*AssetL
 			ModTime: info.ModTime().UnixNano(),
 			Path:    filepath.Join(dataPath, file.Name()),
 		})
-		
+
 		assetNames = append(assetNames, file.Name())
 	}
 

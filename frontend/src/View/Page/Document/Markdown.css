@@ -1,0 +1,15 @@
+.markdown h1 {
+    font-size: 2rem;
+}
+
+.markdown h2 {
+    font-size: 1.6rem;
+}
+
+.markdown h3 {
+    font-size: 1.4rem;
+}
+
+.markdown p {
+    font-size: 1rem;
+}

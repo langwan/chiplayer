@@ -5,7 +5,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { IconHelp, IconMessages, IconMovie } from "@tabler/icons";
+import { IconHelp, IconMovie, IconNotes } from "@tabler/icons";
 import { useNavigate } from "react-router-dom";
 
 export default function LeftMenu(props) {
@@ -40,15 +40,15 @@ export default function LeftMenu(props) {
 
         <ListItemButton onClick={() => navigate("/tasks")}>
           <ListItemIcon>
-            <IconHelp stroke={0.5} />
+            <IconNotes stroke={0.5} />
           </ListItemIcon>
           <ListItemText>任务</ListItemText>
         </ListItemButton>
-        <ListItemButton onClick={() => navigate("/demo2")}>
+        <ListItemButton onClick={() => navigate("/document")}>
           <ListItemIcon>
-            <IconMessages stroke={0.5} />
+            <IconHelp stroke={0.5} />
           </ListItemIcon>
-          <ListItemText>联系方式</ListItemText>
+          <ListItemText>手册</ListItemText>
         </ListItemButton>
       </List>
     </Drawer>
