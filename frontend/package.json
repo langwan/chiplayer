@@ -1,7 +1,7 @@
 {
   "homepage": "/app",
   "dependencies": {
-    "@chihuo/selection": "^1.0.2",
+    "@chihuo/selection": "^1.0.8",
     "@chihuo/table": "^1.0.6",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",

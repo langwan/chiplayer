@@ -29,12 +29,10 @@ export default function AssetNewDialog({ open, maxWidth, onClose, onSubmit }) {
             event.preventDefault();
             try {
               const response = await backendAxios.post("/rpc/AssetAdd", {
-                assetName,
+                asset_name,
               });
               onSubmit(event);
-            } catch (e) {
-              console.log(e);
-            }
+            } catch (e) {}
           }}
         >
           <Button onClick={onClose}>取消</Button>

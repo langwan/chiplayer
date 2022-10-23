@@ -6,7 +6,7 @@ import { IconPlus } from "@tabler/icons";
 import { backendAxios } from "Common/Request";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AssetNewDialog from "View/Dialog/AssetNew";
+import AssetNewDialog from "View/Dialog/AssetNewDialog";
 import AssetItem from "../../Component/AssetItem/index";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",

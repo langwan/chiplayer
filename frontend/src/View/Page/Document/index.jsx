@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import "./Markdown.css";
 const markdown = `
@@ -52,5 +53,9 @@ B站 [https://space.bilibili.com/401571418](https://space.bilibili.com/401571418
 `;
 
 export default () => {
-  return <ReactMarkdown className={"markdown"} children={markdown} />;
+  return (
+    <Box>
+      <ReactMarkdown className={"markdown"} children={markdown} />
+    </Box>
+  );
 };

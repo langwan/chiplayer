@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 let startPoint = null;
-
+let shift = false;
+let globalSelectionModel = [];
 export const itemInBox = (rect, itemDom) => {
   if (rect == null) return false;
   const itemRect = itemDom.getBoundingClientRect();
@@ -14,6 +15,25 @@ export const itemInBox = (rect, itemDom) => {
     return true;
   }
   return false;
+};
+
+const pointInItems = (point, ref) => {
+  let find = null;
+  for (let el of ref.current.children) {
+    let key = el.getAttribute("data-key");
+    let result = pointInItem(
+      {
+        x: event.clientX,
+        y: event.clientY,
+      },
+      el
+    );
+    if (result) {
+      find = key;
+      break;
+    }
+  }
+  return find;
 };
 
 const pointInItem = (point, el) => {
@@ -54,46 +74,67 @@ const calculateSelectionBox = (startPoint, endPoint, current) => {
 };
 
 export const ChihuoSelection = ({
-  getItemElement,
   selectionModel,
-  setRect,
-  rect,
   itemsRef,
   onSelectionModelChange,
   children,
+  disableEvent,
 }) => {
   const [selectionRect, setSelectionRect] = useState(null);
   const ref = useRef();
-  const onMouseDown = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    startPoint = null;
-    setSelectionRect(null);
-
-    let find = null;
-    for (let el of itemsRef.current.children) {
-      let key = el.getAttribute("data-key");
-      let result = pointInItem(
+  const onMouseDown = useCallback((event) => {
+    if (
+      !pointInItem(
         {
           x: event.clientX,
           y: event.clientY,
         },
-        el
+        itemsRef.current
+      )
+    ) {
+      return;
+    }
+
+    startPoint = null;
+    setSelectionRect(null);
+
+    if (event.shiftKey || shift) {
+      let point = {
+        x: event.clientX,
+        y: event.clientY,
+      };
+      let find = pointInItems(point, itemsRef);
+      var sels = globalSelectionModel;
+
+      if (find != null) {
+        let index = sels.indexOf(find);
+
+        if (index !== -1) {
+          sels.splice(index, 1);
+        } else {
+          sels.push(find);
+        }
+
+        onSelectionModelChange([...sels]);
+      }
+    } else {
+      let find = pointInItems(
+        {
+          x: event.clientX,
+          y: event.clientY,
+        },
+        itemsRef
       );
-      if (result) {
-        find = key;
-        break;
+
+      if (find == null) {
+        onSelectionModelChange([]);
+      } else {
+        onSelectionModelChange([find]);
       }
     }
-    console.log("onSelectionModelChange", find);
-    if (find == null) {
-      onSelectionModelChange([]);
-    } else {
-      onSelectionModelChange([find]);
-    }
-  };
+  }, []);
 
-  const onMouseMove = (event) => {
+  const onMouseMove = useCallback((event) => {
     if (event.which != 1) {
       if (startPoint != null) {
         startPoint = null;
@@ -127,26 +168,34 @@ export const ChihuoSelection = ({
           models.push(key);
         }
       }
-      onSelectionModelChange(models);
+      if (!event.shiftKey) {
+        onSelectionModelChange(models);
+      }
     }
-  };
-
-  const onMouseUp = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    startPoint = null;
-    setSelectionRect(null);
-    //setRect(null);
-  };
+  }, []);
 
   useEffect(() => {
-    window.document.addEventListener("mousemove", onMouseMove);
-    window.document.addEventListener("mouseup", onMouseUp);
     return () => {
-      window.document.removeEventListener("mousemove", onMouseMove);
-      window.document.removeEventListener("mouseup", onMouseUp);
+      window.document.removeEventListener("mousemove", onMouseMove, true);
+      window.document.removeEventListener("mousedown", onMouseDown, true);
     };
   }, []);
+
+  useEffect(() => {
+    if (disableEvent) {
+      console.log("removeEventListener");
+      window.document.removeEventListener("mousemove", onMouseMove, true);
+      window.document.removeEventListener("mousedown", onMouseDown, true);
+    } else {
+      console.log("addEventListener");
+      window.document.addEventListener("mousemove", onMouseMove, true);
+      window.document.addEventListener("mousedown", onMouseDown, true);
+    }
+  }, [disableEvent]);
+
+  useEffect(() => {
+    globalSelectionModel = [...selectionModel];
+  }, [selectionModel]);
 
   const renderSelectionBox = () => {
     if (selectionRect == null) {
@@ -172,13 +221,9 @@ export const ChihuoSelection = ({
   };
 
   return (
-    <div style={{ height: "100%" }} onMouseDown={onMouseDown} ref={ref}>
+    <div style={{ height: "100%" }} ref={ref}>
       {children}
       {renderSelectionBox()}
     </div>
   );
-};
-
-ChihuoSelection.defaultProps = {
-  onSelectionModelChange: (models) => {},
 };

@@ -26,8 +26,8 @@ export default function VideoItem(props) {
       <CardMedia
         sx={{ height: "auto", objectFit: "cover" }}
         src={
-          props.video.playerUri
-            ? props.video.playerUri
+          props.video.player_uri
+            ? props.video.player_uri
             : process.env.PUBLIC_URL + "/res/cover.mov"
         }
         component="video"

@@ -13,17 +13,19 @@ import { sioPushRegister, sioPushUnRegister } from "App";
 import { backendAxios } from "Common/Request";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import VideoItem from "../../Component/VideoItem/index";
+import VideoItem from "View/Component/VideoItem";
+import YesNoDialog from "View/Dialog/YesNoDialog";
 export const Videos = (props) => {
   const [items, setItems] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
+
   const gridRef = useRef();
   let { assetName } = useParams();
-
+  const [IsOpenYesNoDialog, setIsOpenYesNoDialog] = useState(false);
   const loader = async () => {
     try {
       const response = await backendAxios.post("/rpc/AssetItemList", {
-        assetName,
+        asset_name: assetName,
       });
       if ("items" in response.data.body) {
         return setItems(response.data.body.items);
@@ -41,7 +43,23 @@ export const Videos = (props) => {
   }, []);
 
   const onSelectionModelChange = (models) => {
+    console.log("onSelectionModelChange", models);
     setSelectionModel([...models]);
+  };
+
+  const onDelete = async () => {
+    console.log("onDelete", selectionModel);
+    let its = [];
+
+    for (let key of selectionModel) {
+      console.log("key", key);
+      let arr = items.filter((item) => item.name == key);
+      its.push(arr[0].name);
+    }
+
+    backendAxios.post("/rpc/RemoveFile", { asset_name: assetName, uris: its });
+
+    console.log(its);
   };
 
   return (
@@ -49,11 +67,13 @@ export const Videos = (props) => {
       direction={"column"}
       sx={{ height: "100%" }}
       justifyContent="flex-start"
+      spacing={1}
     >
       <Stack
         direction={"row"}
         alignItems="center"
         justifyContent="space-between"
+        spacing={1}
       >
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/app">
@@ -65,7 +85,7 @@ export const Videos = (props) => {
           {selectionModel.length > 0 && (
             <Button
               onClick={(event) => {
-                backendAxios.post("/rpc/FileAdd", { assetName });
+                setIsOpenYesNoDialog(true);
               }}
               startIcon={<IconTrash stroke={0.5} />}
             >
@@ -84,6 +104,7 @@ export const Videos = (props) => {
       </Stack>
       <Box sx={{ flexGrow: 1 }}>
         <ChihuoSelection
+          disableEvent={IsOpenYesNoDialog}
           selectionModel={selectionModel}
           onSelectionModelChange={onSelectionModelChange}
           itemsRef={gridRef}
@@ -109,6 +130,23 @@ export const Videos = (props) => {
           </Grid>
         </ChihuoSelection>
       </Box>
+      <YesNoDialog
+        title={"删除视频？"}
+        content="删除后无法恢复，是否要删除？"
+        open={IsOpenYesNoDialog}
+        maxWidth={"xs"}
+        onClose={(event) => {
+          setIsOpenYesNoDialog(false);
+        }}
+        onCancel={(event) => {
+          setSelectionModel([]);
+        }}
+        onOk={(event) => {
+          setIsOpenYesNoDialog(false);
+          onDelete();
+          setSelectionModel([]);
+        }}
+      />
     </Stack>
   );
 };

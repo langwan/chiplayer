@@ -2,11 +2,10 @@ package main
 
 import (
 	"backend/helper"
-	"backend/pb"
 	"context"
 	"github.com/langwan/langgo/components/sqlite"
-	helper_os "github.com/langwan/langgo/helpers/os"
-	helper_platform "github.com/langwan/langgo/helpers/platform"
+	"github.com/langwan/langgo/helpers/os"
+	"github.com/langwan/langgo/helpers/platform"
 	"github.com/ncruces/zenity"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -19,8 +18,7 @@ import (
 type BackendService struct {
 }
 
-func (b BackendService) TaskList(ctx context.Context, empty *pb.Empty) (tasks []TaskModel, err error) {
-
+func (b BackendService) TaskList(ctx context.Context, empty *Empty) (tasks []TaskModel, err error) {
 	res := sqlite.Get().Find(&tasks)
 	if res.RowsAffected > 0 {
 		return tasks, nil
@@ -39,9 +37,8 @@ type AssetListResponse struct {
 	Assets []*AssetListItem `json:"assets"`
 }
 
-func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*AssetListResponse, error) {
+func (b BackendService) AssetList(ctx context.Context, empty *Empty) (*AssetListResponse, error) {
 	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
-
 	files, err := os.ReadDir(dataPath)
 	if err != nil {
 		return nil, err
@@ -83,26 +80,43 @@ func (b BackendService) AssetList(ctx context.Context, empty *pb.Empty) (*AssetL
 	return &response, nil
 }
 
-func (b BackendService) AssetItemList(ctx context.Context, request *pb.AssetItemListRequest) (*pb.AssetItemListResponse, error) {
+type AssetItemListRequest struct {
+	AssetName string `json:"asset_name"`
+}
+
+type AssetItemListItem struct {
+	Name      string `json:"name"`
+	IsFolder  bool   `json:"is_folder"`
+	FileSize  int64  `json:"file_size"`
+	ModTime   int64  `json:"mod_time"`
+	PlayerUri string `json:"player_uri"`
+	Path      string `json:"path"`
+}
+
+type AssetItemListResponse struct {
+	Items []*AssetItemListItem `json:"items"`
+}
+
+func (b BackendService) AssetItemList(ctx context.Context, request *AssetItemListRequest) (*AssetItemListResponse, error) {
 	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
-	assetPath := filepath.Join(dataPath, request.GetAssetName())
+	assetPath := filepath.Join(dataPath, request.AssetName)
 	files, err := helper_os.ReadDir(assetPath, true)
 	if err != nil {
 		return nil, err
 	}
-	response := pb.AssetItemListResponse{}
+	response := AssetItemListResponse{}
 
 	for _, file := range files {
 		info, err := file.Info()
 		if err != nil {
 			continue
 		}
-		response.Items = append(response.Items, &pb.Item{
+		response.Items = append(response.Items, &AssetItemListItem{
 			Name:      file.Name(),
 			IsFolder:  file.IsDir(),
 			FileSize:  info.Size(),
 			ModTime:   info.ModTime().UnixNano(),
-			PlayerUri: path.Join("/player", request.GetAssetName(), file.Name()),
+			PlayerUri: path.Join("/player", request.AssetName, file.Name()),
 			Path:      filepath.Join(assetPath, file.Name()),
 		})
 	}
@@ -114,7 +128,11 @@ func (b BackendService) AssetItemList(ctx context.Context, request *pb.AssetItem
 	return &response, nil
 }
 
-func (b BackendService) FileAdd(ctx context.Context, request *pb.FileAddRequest) (*pb.Empty, error) {
+type FileAddRequest struct {
+	AssetName string `json:"asset_name"`
+}
+
+func (b BackendService) FileAdd(ctx context.Context, request *FileAddRequest) (*Empty, error) {
 
 	files, err := zenity.SelectFileMultiple(
 		zenity.FileFilters{
@@ -130,9 +148,9 @@ func (b BackendService) FileAdd(ctx context.Context, request *pb.FileAddRequest)
 			continue
 		}
 		filename := filepath.Base(f)
-		dst := filepath.Join(dataPath, request.GetAssetName(), filename)
+		dst := filepath.Join(dataPath, request.AssetName, filename)
 		task := TaskModel{
-			AssetName:     request.GetAssetName(),
+			AssetName:     request.AssetName,
 			Name:          filename,
 			LocalPath:     f,
 			DstPath:       dst,
@@ -148,49 +166,92 @@ func (b BackendService) FileAdd(ctx context.Context, request *pb.FileAddRequest)
 		go RequestStart(&task)
 	}
 
-	return &pb.Empty{}, nil
+	return &Empty{}, nil
 }
 
-func (b BackendService) AssetAdd(ctx context.Context, request *pb.AssetAddRequest) (*pb.Empty, error) {
+type AssetAddRequest struct {
+	AssetName string `json:"asset_name"`
+}
+
+type Empty struct {
+}
+
+func (b BackendService) AssetAdd(ctx context.Context, request *AssetAddRequest) (*Empty, error) {
 	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
-	assetPath := filepath.Join(dataPath, request.GetAssetName())
+	assetPath := filepath.Join(dataPath, request.AssetName)
 	if helper_os.FileExists(assetPath) {
-		return &pb.Empty{}, status.Error(codes.AlreadyExists, "资料夹已经存在")
+		return &Empty{}, status.Error(codes.AlreadyExists, "资料夹已经存在")
 	}
 	err := helper_os.CreateFolder(assetPath, false)
 	if err != nil {
-		return &pb.Empty{}, status.Error(codes.Aborted, err.Error())
+		return &Empty{}, status.Error(codes.Aborted, err.Error())
 	}
-	return &pb.Empty{}, nil
+	return &Empty{}, nil
 }
 
-func (b BackendService) Hello(ctx context.Context, empty *pb.Empty) (*pb.HelloResponse, error) {
-	return &pb.HelloResponse{Message: "hello"}, nil
+type HelloResponse struct {
+	Message string `json:"message"`
+}
+
+func (b BackendService) Hello(ctx context.Context, empty *Empty) (*HelloResponse, error) {
+	return &HelloResponse{Message: "hello"}, nil
 }
 
 type OpenDataFileRequest struct {
 	Path string `json:"path"`
 }
 
-func (b BackendService) OpenDataFile(ctx context.Context, request *OpenDataFileRequest) (*pb.Empty, error) {
+func (b BackendService) OpenDataFile(ctx context.Context, request *OpenDataFileRequest) (*Empty, error) {
 	helper_platform.OpenFileExplorer(request.Path)
-	return &pb.Empty{}, nil
+	return &Empty{}, nil
 }
 
-func (b BackendService) EraserAll(ctx context.Context, empty *pb.Empty) (*pb.Empty, error) {
+func (b BackendService) EraserAll(ctx context.Context, empty *Empty) (*Empty, error) {
 	var tasks []TaskModel
 	sqlite.Get().Where("1 = 1").Unscoped().Delete(&tasks)
 	go PushMessageTasks()
-	return &pb.Empty{}, nil
+	return &Empty{}, nil
 }
 
 type EraserRequest struct {
 	Ids []string `json:"ids"`
 }
 
-func (b BackendService) Eraser(ctx context.Context, request *EraserRequest) (*pb.Empty, error) {
+func (b BackendService) Eraser(ctx context.Context, request *EraserRequest) (*Empty, error) {
 	var tasks []TaskModel
 	sqlite.Get().Unscoped().Delete(&tasks, "id in ?", request.Ids)
 	go PushMessageTasks()
-	return &pb.Empty{}, nil
+	return &Empty{}, nil
+}
+
+type RemoveFileRequest struct {
+	AssetName string   `json:"asset_name"`
+	Uris      []string `json:"uris"`
+}
+
+func (b BackendService) RemoveFile(ctx context.Context, request *RemoveFileRequest) (*Empty, error) {
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
+	assetPath := filepath.Join(dataPath, request.AssetName)
+	if !helper_os.FileExists(assetPath) {
+		return &Empty{}, status.Error(codes.AlreadyExists, "资料夹不存在")
+	}
+	for _, uri := range request.Uris {
+		filename := filepath.Join(assetPath, uri)
+		os.Remove(filename)
+	}
+	PushMessageVideos()
+	return &Empty{}, nil
+}
+
+type RemoveAssetRequest struct {
+	AssetNames []string `json:"asset_names"`
+}
+
+func (b BackendService) RemoveAsset(ctx context.Context, request *RemoveAssetRequest) (*Empty, error) {
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
+	for _, assetName := range request.AssetNames {
+		assetPath := filepath.Join(dataPath, assetName)
+		os.Remove(assetPath)
+	}
+	return &Empty{}, nil
 }
