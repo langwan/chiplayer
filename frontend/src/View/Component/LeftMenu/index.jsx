@@ -6,10 +6,35 @@ import {
   ListItemText,
 } from "@mui/material";
 import { IconHelp, IconMovie, IconNotes } from "@tabler/icons";
-import { useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 export default function LeftMenu(props) {
   let navigate = useNavigate();
+  const location = useLocation();
+
+  let menus = [
+    {
+      name: "/",
+
+      displayName: "资料库",
+      icon: <IconMovie stroke={0.5} />,
+    },
+    {
+      name: "/tasks",
+      displayName: "任务",
+      icon: <IconNotes stroke={0.5} />,
+    },
+    {
+      name: "/document",
+      displayName: "手册",
+      icon: <IconHelp stroke={0.5} />,
+    },
+  ];
+
+  useEffect(() => {
+    console.log(location);
+  }, []);
+
   return (
     <Drawer
       anchor="left"
@@ -28,28 +53,20 @@ export default function LeftMenu(props) {
       open={props.open}
     >
       <List sx={{ paddingTop: 0 }}>
-        <ListItemButton
-          sx={{ backgroundColor: "#fff" }}
-          onClick={() => navigate("/")}
-        >
-          <ListItemIcon>
-            <IconMovie stroke={0.5} />
-          </ListItemIcon>
-          <ListItemText>资料库</ListItemText>
-        </ListItemButton>
-
-        <ListItemButton onClick={() => navigate("/tasks")}>
-          <ListItemIcon>
-            <IconNotes stroke={0.5} />
-          </ListItemIcon>
-          <ListItemText>任务</ListItemText>
-        </ListItemButton>
-        <ListItemButton onClick={() => navigate("/document")}>
-          <ListItemIcon>
-            <IconHelp stroke={0.5} />
-          </ListItemIcon>
-          <ListItemText>手册</ListItemText>
-        </ListItemButton>
+        {menus.map((menu) => (
+          <ListItemButton
+            key={menu.name}
+            sx={{
+              backgroundColor: location.pathname == menu.name ? "#fff" : "",
+            }}
+            onClick={(event) => {
+              navigate(menu.name);
+            }}
+          >
+            <ListItemIcon>{menu.icon}</ListItemIcon>
+            <ListItemText>{menu.displayName}</ListItemText>
+          </ListItemButton>
+        ))}
       </List>
     </Drawer>
   );
