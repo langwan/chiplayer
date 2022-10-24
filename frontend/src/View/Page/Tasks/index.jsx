@@ -51,7 +51,7 @@ const columns = [
       <Stack direction={"row"} spacing={1} alignItems={"center"}>
         <IconButton
           onClick={async (event) => {
-            await backendAxios.post("/rpc/Eraser", {
+            await backendAxios.post("/rpc/EraserTasks", {
               ids: ["" + params.row.id],
             });
           }}
@@ -90,9 +90,11 @@ export default () => {
               selectionModel.length != 0 &&
               selectionModel.length == tasks.length
             ) {
-              await backendAxios.post("/rpc/EraserAll", {});
+              await backendAxios.post("/rpc/EraserTaskAll", {});
             } else if (selectionModel.length > 0) {
-              await backendAxios.post("/rpc/Eraser", { ids: selectionModel });
+              await backendAxios.post("/rpc/EraserTasks", {
+                ids: selectionModel,
+              });
             }
           }}
           startIcon={<IconEraser stroke={1} width={24} />}

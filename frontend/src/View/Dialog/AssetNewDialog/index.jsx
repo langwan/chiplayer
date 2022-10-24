@@ -26,10 +26,11 @@ export default function AssetNewDialog({ open, maxWidth, onClose, onSubmit }) {
       <DialogActions>
         <form
           onSubmit={async (event) => {
+            console.log("onsubmit");
             event.preventDefault();
             try {
               const response = await backendAxios.post("/rpc/AssetAdd", {
-                asset_name,
+                asset_name: assetName,
               });
               onSubmit(event);
             } catch (e) {}

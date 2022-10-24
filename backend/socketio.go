@@ -75,3 +75,12 @@ func PushMessageVideos() {
 	socketio.BroadcastToAll("push", message)
 	log.Logger("app", "socketio").Info().Interface("message", message).Msg("push")
 }
+
+func PushMessageAssets() {
+	message := Message{
+		Method: "assets",
+		Body:   nil,
+	}
+	socketio.BroadcastToAll("push", message)
+	log.Logger("app", "socketio").Info().Interface("message", message).Msg("push")
+}

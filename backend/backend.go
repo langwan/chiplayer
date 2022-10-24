@@ -186,6 +186,7 @@ func (b BackendService) AssetAdd(ctx context.Context, request *AssetAddRequest) 
 	if err != nil {
 		return &Empty{}, status.Error(codes.Aborted, err.Error())
 	}
+	PushMessageAssets()
 	return &Empty{}, nil
 }
 
@@ -206,7 +207,7 @@ func (b BackendService) OpenDataFile(ctx context.Context, request *OpenDataFileR
 	return &Empty{}, nil
 }
 
-func (b BackendService) EraserAll(ctx context.Context, empty *Empty) (*Empty, error) {
+func (b BackendService) EraserTaskAll(ctx context.Context, empty *Empty) (*Empty, error) {
 	var tasks []TaskModel
 	sqlite.Get().Where("1 = 1").Unscoped().Delete(&tasks)
 	go PushMessageTasks()
@@ -217,7 +218,7 @@ type EraserRequest struct {
 	Ids []string `json:"ids"`
 }
 
-func (b BackendService) Eraser(ctx context.Context, request *EraserRequest) (*Empty, error) {
+func (b BackendService) EraserTasks(ctx context.Context, request *EraserRequest) (*Empty, error) {
 	var tasks []TaskModel
 	sqlite.Get().Unscoped().Delete(&tasks, "id in ?", request.Ids)
 	go PushMessageTasks()
