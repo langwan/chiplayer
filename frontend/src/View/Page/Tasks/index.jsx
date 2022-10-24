@@ -1,9 +1,9 @@
-import { ChihuoTable } from "@chihuo/table";
-import { Box, Button, IconButton, Stack } from "@mui/material";
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import { IconEraser, IconFile, IconSearch } from "@tabler/icons";
 import { backendAxios } from "Common/Request";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { ChihuoTable } from "View/ChihuoTable";
 function formatFileSize(size) {
   var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
   return (
@@ -23,25 +23,27 @@ const columns = [
         justifyContent="flex-start"
       >
         <IconFile stroke={1} />
-        <Box pl={1}>{params.row.name}</Box>
+        <Typography noWrap pl={1}>
+          {params.row.name}
+        </Typography>
       </Stack>
     ),
   },
   {
     field: "total_bytes",
     headerName: "大小",
+    type: "number",
     width: 200,
-
-    renderCell: (params) =>
-      formatFileSize(params.row.consumed_bytes) +
-      "/" +
-      formatFileSize(params.row.total_bytes),
+    renderCell: (params) => formatFileSize(params.row.total_bytes),
   },
   {
     field: "updated_at",
     headerName: "修改时间",
+    type: "dateTime",
     width: 160,
-    renderCell: (params) => <Box>{new Date().toLocaleString()}</Box>,
+    renderCell: (params) => (
+      <Box>{new Date(params.row.updated_at).toLocaleString()}</Box>
+    ),
   },
   {
     field: "op",
