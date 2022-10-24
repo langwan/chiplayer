@@ -4,6 +4,7 @@ import {
   CardMedia,
   IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons";
@@ -36,35 +37,39 @@ export default function AssetItem(props) {
         }
         component="video"
       />
-      <CardContent>
-        <Stack
-          direction={"row"}
-          justifyContent={"space-between"}
-          alignItems="center"
-        >
-          <Typography
-            variant="h5"
-            component="div"
-            sx={{ color: props.checked ? "white" : "" }}
+      <Tooltip title={props.title} placement={"top"}>
+        <CardContent>
+          <Stack
+            direction={"row"}
+            justifyContent={"space-between"}
+            alignItems="center"
           >
-            {props.title}
-          </Typography>
-          <IconButton
-            onClick={async (event) => {
-              backendAxios.post("/rpc/OpenDataFile", {
-                path: props.path,
-              });
-            }}
-          >
-            <IconSearch
-              color={props.checked ? "white" : "#677684"}
-              stroke={1.4}
-              width={16}
-              height={16}
-            />
-          </IconButton>
-        </Stack>
-      </CardContent>
+            <Typography
+              noWrap={true}
+              variant="h5"
+              component="div"
+              sx={{ color: props.checked ? "white" : "" }}
+            >
+              {props.title}
+            </Typography>
+
+            <IconButton
+              onClick={async (event) => {
+                backendAxios.post("/rpc/OpenDataFile", {
+                  path: props.path,
+                });
+              }}
+            >
+              <IconSearch
+                color={props.checked ? "white" : "#677684"}
+                stroke={1.4}
+                width={16}
+                height={16}
+              />
+            </IconButton>
+          </Stack>
+        </CardContent>
+      </Tooltip>
     </Card>
   );
 }

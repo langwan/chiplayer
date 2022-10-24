@@ -99,7 +99,7 @@ export default function Assets() {
         itemsRef={gridRef}
         disableEvent={IsOpenYesNoDialog}
       >
-        <Grid container ref={gridRef} spacing={1}>
+        <Grid container ref={gridRef} spacing={2}>
           {assets &&
             assets.map((asset) => (
               <Grid

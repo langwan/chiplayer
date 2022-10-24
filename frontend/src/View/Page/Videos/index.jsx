@@ -109,7 +109,7 @@ export const Videos = (props) => {
           onSelectionModelChange={onSelectionModelChange}
           itemsRef={gridRef}
         >
-          <Grid container spacing={4} ref={gridRef}>
+          <Grid container spacing={2} ref={gridRef}>
             {items &&
               items.map((video) => (
                 <Grid

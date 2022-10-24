@@ -1,4 +1,4 @@
-import { IconButton, Stack } from "@mui/material";
+import { IconButton, Stack, Tooltip } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -33,35 +33,39 @@ export default function VideoItem(props) {
         component="video"
         controls
       />
-      <CardContent>
-        <Stack
-          direction={"row"}
-          justifyContent={"space-between"}
-          alignItems="center"
-        >
-          <Typography
-            variant="h5"
-            component="div"
-            sx={{ color: props.checked ? "white" : "" }}
+      <Tooltip title={props.video.name} placement={"top"}>
+        <CardContent>
+          <Stack
+            direction={"row"}
+            justifyContent={"space-between"}
+            alignItems="center"
           >
-            {props.video.name}
-          </Typography>
-          <IconButton
-            onClick={async (event) => {
-              backendAxios.post("/rpc/OpenDataFile", {
-                path: props.video.path,
-              });
-            }}
-          >
-            <IconSearch
-              color={props.checked ? "white" : "#677684"}
-              stroke={1.4}
-              width={16}
-              height={16}
-            />
-          </IconButton>
-        </Stack>
-      </CardContent>
+            <Typography
+              noWrap={true}
+              variant="h5"
+              component="div"
+              sx={{ color: props.checked ? "white" : "" }}
+            >
+              {props.video.name}
+            </Typography>
+
+            <IconButton
+              onClick={async (event) => {
+                backendAxios.post("/rpc/OpenDataFile", {
+                  path: props.video.path,
+                });
+              }}
+            >
+              <IconSearch
+                color={props.checked ? "white" : "#677684"}
+                stroke={1.4}
+                width={16}
+                height={16}
+              />
+            </IconButton>
+          </Stack>
+        </CardContent>
+      </Tooltip>
     </Card>
   );
 }
