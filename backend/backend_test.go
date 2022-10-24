@@ -1,68 +1,51 @@
 package main
 
 import (
-	"backend/pb"
 	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
-func TestBackendService_AssetAdd(t *testing.T) {
-	s := BackendService{}
-	_, err := s.AssetAdd(context.Background(), &pb.AssetAddRequest{AssetName: "摄影"})
-	assert.NoError(t, err)
-}
-
-func TestBackendService_FileAdd(t *testing.T) {
-	s := BackendService{}
-	_, err := s.FileAdd(context.Background(), &pb.FileAddRequest{
-		AssetName: "摄影",
-		FilePath:  "../samples/Homework.mp4",
-	})
-	assert.NoError(t, err)
-}
-
-func TestBackendService_AssetItemList(t *testing.T) {
-	s := BackendService{}
-	list, err := s.AssetItemList(context.Background(), &pb.AssetItemListRequest{AssetName: "摄影"})
-	assert.NoError(t, err)
-	assert.True(t, len(list.GetItems()) > 0)
-}
-
-func TestBackendService_FileAdd1(t *testing.T) {
-	WorkerStart()
+func TestBackendService_FileRename(t *testing.T) {
 	type args struct {
 		ctx     context.Context
-		request *pb.FileAddRequest
+		request *FileRenameRequest
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *pb.Empty
+		want    *Empty
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
-			name: "",
+			name: "rename",
 			args: args{
 				ctx: context.Background(),
-				request: &pb.FileAddRequest{
+				request: &FileRenameRequest{
 					AssetName: "学习",
-					FilePath:  "samples/sample1.mp4",
+					Name:      "Raindrops_Macro2_Videvo.mov",
+					NewName:   "1.mov",
 				},
 			},
-			want:    &pb.Empty{},
+			want:    &Empty{},
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			b := BackendService{}
-			got, err := b.FileAdd(tt.args.ctx, tt.args.request)
-			if !tt.wantErr(t, err, fmt.Sprintf("FileAdd(%v, %v)", tt.args.ctx, tt.args.request)) {
+			got, err := b.FileRename(tt.args.ctx, tt.args.request)
+			if !tt.wantErr(t, err, fmt.Sprintf("FileRename(%v, %v)", tt.args.ctx, tt.args.request)) {
 				return
 			}
-			assert.Equalf(t, tt.want, got, "FileAdd(%v, %v)", tt.args.ctx, tt.args.request)
+			assert.Equalf(t, tt.want, got, "FileRename(%v, %v)", tt.args.ctx, tt.args.request)
 		})
 	}
+}
+
+func TestOsRename(t *testing.T) {
+	err := os.Rename("/Users/langwan/Documents/.chiplayer/data/学习/Raindrops_Macro2_Videvo.mov", "1.mov")
+	assert.NoError(t, err)
 }

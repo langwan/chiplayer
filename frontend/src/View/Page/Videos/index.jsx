@@ -16,6 +16,7 @@ import { useParams } from "react-router-dom";
 import VideoItem from "View/Component/VideoItem";
 import YesNoDialog from "View/Dialog/YesNoDialog";
 export const Videos = (props) => {
+  const [currentEditText, setCurrentEditText] = useState(null);
   const [items, setItems] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
   const gridRef = useRef();
@@ -116,6 +117,13 @@ export const Videos = (props) => {
                   <VideoItem
                     checked={selectionModel.includes(video.name)}
                     video={video}
+                    setCurrentEditText={(value) => {
+                      if (value != null) {
+                        setSelectionModel([]);
+                      }
+                      setCurrentEditText(value);
+                    }}
+                    currentEditText={currentEditText}
                   />
                 </Grid>
               ))}

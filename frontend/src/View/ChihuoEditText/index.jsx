@@ -1,5 +1,5 @@
 import { Box, TextField, Typography } from "@mui/material";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const start = "start";
 const editing = "editing";
@@ -12,6 +12,7 @@ export const ChihuoEditText = ({
   content,
   onSave,
   onStop,
+  ...props
 }) => {
   const ref = useRef();
   const [value, setValue] = useState(start);
@@ -39,7 +40,7 @@ export const ChihuoEditText = ({
   }, [content]);
 
   return (
-    <Fragment>
+    <Box sx={{ overflow: "hidden", flexGrow: 1 }}>
       {editState != end ? (
         <TextField
           variant="standard"
@@ -94,6 +95,6 @@ export const ChihuoEditText = ({
           <Typography {...TextProps}>{content}</Typography>
         </Box>
       )}
-    </Fragment>
+    </Box>
   );
 };

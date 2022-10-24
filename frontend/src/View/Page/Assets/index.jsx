@@ -84,14 +84,7 @@ export default function Assets() {
               {selectionModel.length == assets.length && "全部"}删除
             </Button>
           )}
-          <Button
-            onClick={(event) => {
-              setCurrentEditText("摄影");
-            }}
-            startIcon={<IconPlus stroke={0.5} />}
-          >
-            测试编辑
-          </Button>
+
           <Button
             onClick={(event) => setAssetNewDialogIsOpen(true)}
             startIcon={<IconPlus stroke={0.5} />}

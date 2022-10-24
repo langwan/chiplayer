@@ -3,6 +3,8 @@ package main
 import (
 	"backend/helper"
 	"context"
+	"errors"
+	"fmt"
 	"github.com/langwan/langgo/components/sqlite"
 	"github.com/langwan/langgo/helpers/os"
 	"github.com/langwan/langgo/helpers/platform"
@@ -13,6 +15,7 @@ import (
 	"path"
 	"path/filepath"
 	"sort"
+	"strings"
 )
 
 type BackendService struct {
@@ -91,6 +94,7 @@ type AssetItemListItem struct {
 	ModTime   int64  `json:"mod_time"`
 	PlayerUri string `json:"player_uri"`
 	Path      string `json:"path"`
+	AssetName string `json:"asset_name"`
 }
 
 type AssetItemListResponse struct {
@@ -118,6 +122,7 @@ func (b BackendService) AssetItemList(ctx context.Context, request *AssetItemLis
 			ModTime:   info.ModTime().UnixNano(),
 			PlayerUri: path.Join("/player", request.AssetName, file.Name()),
 			Path:      filepath.Join(assetPath, file.Name()),
+			AssetName: request.AssetName,
 		})
 	}
 
@@ -255,4 +260,42 @@ func (b BackendService) RemoveAsset(ctx context.Context, request *RemoveAssetReq
 		os.Remove(assetPath)
 	}
 	return &Empty{}, nil
+}
+
+type AssetRenameRequest struct {
+	Name    string `json:"name"`
+	NewName string `json:"new_name"`
+}
+
+func (b BackendService) AssetRename(ctx context.Context, request *AssetRenameRequest) (*Empty, error) {
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
+	assetPath := filepath.Join(dataPath, request.Name)
+	newAssetPath := filepath.Join(dataPath, request.NewName)
+	os.Rename(assetPath, newAssetPath)
+	return &Empty{}, nil
+}
+
+type FileRenameRequest struct {
+	AssetName string `json:"asset_name"`
+	Name      string `json:"name"`
+	NewName   string `json:"new_name"`
+}
+
+func (b BackendService) FileRename(ctx context.Context, request *FileRenameRequest) (*Empty, error) {
+	dataPath := Preferences.GetString(DataPath, helper.GetDefaultDataPath())
+	assetPath := filepath.Join(dataPath, request.AssetName)
+	filePath := filepath.Join(assetPath, request.Name)
+	ext := filepath.Ext(filePath)
+	newName := fileNameWithoutExtTrimSuffix(request.NewName)
+	fileNewPath := filepath.Join(assetPath, newName+ext)
+	err := os.Rename(filePath, fileNewPath)
+	msg := fmt.Sprint(err)
+	if err != nil {
+		return &Empty{}, errors.New(msg)
+	}
+	return &Empty{}, nil
+}
+
+func fileNameWithoutExtTrimSuffix(fileName string) string {
+	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
 }

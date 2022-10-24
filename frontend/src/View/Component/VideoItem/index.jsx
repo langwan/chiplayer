@@ -2,13 +2,12 @@ import { IconButton, Stack, Tooltip } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
 import { IconSearch } from "@tabler/icons";
 import { backendAxios } from "Common/Request";
+import { ChihuoEditText } from "View/ChihuoEditText";
 export default function VideoItem(props) {
   return (
     <Card
-      {...props}
       sx={{
         "&.MuiCard-root": {
           boxShadow: "none",
@@ -36,18 +35,33 @@ export default function VideoItem(props) {
       <Tooltip title={props.video.name} placement={"top"}>
         <CardContent>
           <Stack
+            width={"100%"}
             direction={"row"}
             justifyContent={"space-between"}
             alignItems="center"
           >
-            <Typography
-              noWrap={true}
-              variant="h5"
-              component="div"
-              sx={{ color: props.checked ? "white" : "" }}
-            >
-              {props.video.name}
-            </Typography>
+            <ChihuoEditText
+              TextProps={{
+                noWrap: true,
+                width: "100%",
+                sx: { color: props.checked ? "white" : "" },
+              }}
+              name={props.video.name}
+              isEdit={props.currentEditText == props.video.title}
+              content={props.video.name}
+              onStop={(name, value) => {
+                props.setCurrentEditText(null);
+              }}
+              onSave={async (name, value) => {
+                props.setCurrentEditText(null);
+                await backendAxios.post("/rpc/FileRename", {
+                  asset_name: props.video.asset_name,
+                  name: props.video.name,
+                  new_name: value,
+                });
+                console.log("edit stop", name, value);
+              }}
+            ></ChihuoEditText>
 
             <IconButton
               onClick={async (event) => {
