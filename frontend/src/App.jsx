@@ -21,7 +21,6 @@ export const sioPushRegister = (method, callback) => {
   } else {
     pushCallbacks[method].push(callback);
   }
-  console.log("sioPushRegister", pushCallbacks);
 };
 
 export const sioPushUnRegister = (method, callback) => {
@@ -37,12 +36,8 @@ export const sioPushUnRegister = (method, callback) => {
 export default () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    sio.on("connect", (message) => {
-      console.log(message);
-    });
+    sio.on("connect", (message) => {});
     sio.on("push", (message) => {
-      console.log("message", message);
-
       if (message.method == "tasks") {
         dispatch(setTasks(message.body));
       } else {
@@ -53,9 +48,7 @@ export default () => {
         }
       }
     });
-    sio.on("hello", (message) => {
-      console.log("message", message);
-    });
+    sio.on("hello", (message) => {});
   }, []);
   return <RouterProvider router={router} />;
 };

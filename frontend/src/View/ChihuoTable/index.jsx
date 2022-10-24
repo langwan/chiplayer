@@ -108,7 +108,7 @@ export const ChihuoTable = ({
       let result = rows;
       let col = columnMap[sorting.field];
       let type = col.type ? col.type : "string";
-      console.log("sorting", col, type, sorting);
+
       result.sort((a, b) => {
         switch (type) {
           case "number":
@@ -127,7 +127,7 @@ export const ChihuoTable = ({
               : b[sorting.field].localeCompare(a[sorting.field]);
         }
       });
-      console.log("setItems", result);
+
       setItems([...result]);
     }
 

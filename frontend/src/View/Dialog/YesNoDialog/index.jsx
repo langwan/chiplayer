@@ -20,7 +20,6 @@ export default ({
       maxWidth={maxWidth}
       fullWidth={true}
       onClose={(event) => {
-        console.log(event);
         onClose();
       }}
     >

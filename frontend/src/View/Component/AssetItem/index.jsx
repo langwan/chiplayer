@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons";
 import { backendAxios } from "Common/Request";
+import { ChihuoEditText } from "View/ChihuoEditText";
 export default function AssetItem(props) {
   return (
     <Card
@@ -48,9 +49,16 @@ export default function AssetItem(props) {
               noWrap={true}
               variant="h5"
               component="div"
-              sx={{ color: props.checked ? "white" : "" }}
+              sx={{ flexGrow: 1, color: props.checked ? "white" : "" }}
             >
-              {props.title}
+              <ChihuoEditText
+                name={props.title}
+                isEdit={props.isEdit}
+                content={props.title}
+                onSave={(name, value) => {
+                  console.log("edit stop", name, value);
+                }}
+              ></ChihuoEditText>
             </Typography>
 
             <IconButton

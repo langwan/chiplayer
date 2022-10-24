@@ -18,7 +18,6 @@ import YesNoDialog from "View/Dialog/YesNoDialog";
 export const Videos = (props) => {
   const [items, setItems] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
-
   const gridRef = useRef();
   let { assetName } = useParams();
   const [IsOpenYesNoDialog, setIsOpenYesNoDialog] = useState(false);
@@ -43,23 +42,16 @@ export const Videos = (props) => {
   }, []);
 
   const onSelectionModelChange = (models) => {
-    console.log("onSelectionModelChange", models);
     setSelectionModel([...models]);
   };
 
   const onDelete = async () => {
-    console.log("onDelete", selectionModel);
     let its = [];
-
     for (let key of selectionModel) {
-      console.log("key", key);
       let arr = items.filter((item) => item.name == key);
       its.push(arr[0].name);
     }
-
     backendAxios.post("/rpc/RemoveFile", { asset_name: assetName, uris: its });
-
-    console.log(its);
   };
 
   return (

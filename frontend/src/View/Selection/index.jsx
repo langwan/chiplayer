@@ -183,11 +183,9 @@ export const ChihuoSelection = ({
 
   useEffect(() => {
     if (disableEvent) {
-      console.log("removeEventListener");
       window.document.removeEventListener("mousemove", onMouseMove, true);
       window.document.removeEventListener("mousedown", onMouseDown, true);
     } else {
-      console.log("addEventListener");
       window.document.addEventListener("mousemove", onMouseMove, true);
       window.document.addEventListener("mousedown", onMouseDown, true);
     }

@@ -21,6 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Assets() {
   const [selectionModel, setSelectionModel] = useState([]);
   const gridRef = useRef();
+  const [currentEditText, setCurrentEditText] = useState("学习");
 
   const [IsOpenYesNoDialog, setIsOpenYesNoDialog] = useState(false);
   const [assetNewDialogIsOpen, setAssetNewDialogIsOpen] = useState(false);
@@ -33,15 +34,13 @@ export default function Assets() {
   const loader = async () => {
     try {
       const response = await backendAxios.post("/rpc/AssetList", {});
-      console.log(response);
+
       if ("assets" in response.data.body) {
         setAssets(response.data.body.assets);
       } else {
         setAssets([]);
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   useEffect(() => {
@@ -97,7 +96,7 @@ export default function Assets() {
         selectionModel={selectionModel}
         onSelectionModelChange={onSelectionModelChange}
         itemsRef={gridRef}
-        disableEvent={IsOpenYesNoDialog}
+        disableEvent={IsOpenYesNoDialog || currentEditText != null}
       >
         <Grid container ref={gridRef} spacing={2}>
           {assets &&
@@ -115,6 +114,7 @@ export default function Assets() {
                   onClick={(event) => {
                     navigate(`/videos/${asset.name}`);
                   }}
+                  isEdit={currentEditText && currentEditText == asset.name}
                   checked={selectionModel.includes(asset.name)}
                   cover={asset.cover}
                   title={asset.name}
