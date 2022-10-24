@@ -72,7 +72,8 @@ func (b BackendService) AssetList(ctx context.Context, empty *Empty) (*AssetList
 		for _, model := range models {
 			for _, asset := range response.Assets {
 				if asset.Name == model.Name {
-					asset.Cover = model.Cover
+					player := path.Join("/player", asset.Name, model.Cover)
+					asset.Cover = player
 
 					break
 				}
@@ -272,6 +273,8 @@ func (b BackendService) AssetRename(ctx context.Context, request *AssetRenameReq
 	assetPath := filepath.Join(dataPath, request.Name)
 	newAssetPath := filepath.Join(dataPath, request.NewName)
 	os.Rename(assetPath, newAssetPath)
+	sqlite.Get().Debug().Model(&AssetModel{}).Where("name=?", request.Name).Update("name", request.NewName)
+	PushMessageAssets()
 	return &Empty{}, nil
 }
 
@@ -293,6 +296,7 @@ func (b BackendService) FileRename(ctx context.Context, request *FileRenameReque
 	if err != nil {
 		return &Empty{}, errors.New(msg)
 	}
+	PushMessageVideos()
 	return &Empty{}, nil
 }
 

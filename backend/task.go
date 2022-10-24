@@ -84,14 +84,14 @@ func RequestStart(task *TaskModel) (err error) {
 	} else {
 		if helperString.IsEmpty(asset.Name) {
 			dstName := filepath.Base(req.Task.DstPath)
-			playerUri := path.Join("/player", req.Task.AssetName, dstName)
-			asset.Cover = playerUri
+			//playerUri := path.Join("/player", req.Task.AssetName, dstName)
+			asset.Cover = dstName
 			sqlite.Get().Save(&asset)
 		}
 	}
 
 	PushMessageVideos()
-	
+
 	return err
 }
 

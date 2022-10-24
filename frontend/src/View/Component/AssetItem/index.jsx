@@ -56,9 +56,12 @@ export default function AssetItem(props) {
               onStop={(name, value) => {
                 props.setCurrentEditText(null);
               }}
-              onSave={(name, value) => {
+              onSave={async (name, value) => {
                 props.setCurrentEditText(null);
-                console.log("edit stop", name, value);
+                await backendAxios.post("/rpc/AssetRename", {
+                  name: props.title,
+                  new_name: value,
+                });
               }}
             ></ChihuoEditText>
           </Typography>
