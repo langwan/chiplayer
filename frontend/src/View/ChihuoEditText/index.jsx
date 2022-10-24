@@ -5,7 +5,14 @@ const start = "start";
 const editing = "editing";
 const end = "end";
 
-export const ChihuoEditText = ({ name, isEdit, content, onSave }) => {
+export const ChihuoEditText = ({
+  TextProps,
+  name,
+  isEdit,
+  content,
+  onSave,
+  onStop,
+}) => {
   const ref = useRef();
   const [value, setValue] = useState(start);
   const [editState, setEditState] = useState(end);
@@ -15,13 +22,19 @@ export const ChihuoEditText = ({ name, isEdit, content, onSave }) => {
       case start:
         ref.current.select();
         ref.current.focus();
+        setValue(content);
         setEditState(editing);
         break;
     }
   }, [editState]);
 
   useEffect(() => {
-    console.log("setValue");
+    if (isEdit) {
+      setEditState(start);
+    }
+  }, [isEdit]);
+
+  useEffect(() => {
     setValue(content);
   }, [content]);
 
@@ -29,6 +42,10 @@ export const ChihuoEditText = ({ name, isEdit, content, onSave }) => {
     <Fragment>
       {editState != end ? (
         <TextField
+          variant="standard"
+          InputProps={{
+            disableUnderline: true,
+          }}
           onBlur={(event) => {
             console.log("key", name);
             setEditState(end);
@@ -41,17 +58,23 @@ export const ChihuoEditText = ({ name, isEdit, content, onSave }) => {
               onSave(name, value);
             } else if (event.key === "Escape") {
               setEditState(end);
+              onStop(name, value);
             }
           }}
           inputRef={ref}
           fullWidth
           sx={{
+            "& .MuiInputBase-root": {
+              backgroundColor: "white",
+              pl: 1,
+            },
             "& .MuiOutlinedInput-root": {
               borderRadius: 0,
             },
             "& .MuiOutlinedInput-input": {
               padding: 0,
               p: 1,
+              border: "none",
             },
           }}
           value={value}
@@ -63,10 +86,12 @@ export const ChihuoEditText = ({ name, isEdit, content, onSave }) => {
         <Box
           component={"div"}
           onDoubleClick={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
             setEditState(start);
           }}
         >
-          <Typography>{content}</Typography>
+          <Typography {...TextProps}>{content}</Typography>
         </Box>
       )}
     </Fragment>

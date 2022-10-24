@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Assets() {
   const [selectionModel, setSelectionModel] = useState([]);
   const gridRef = useRef();
-  const [currentEditText, setCurrentEditText] = useState("学习");
+  const [currentEditText, setCurrentEditText] = useState(null);
 
   const [IsOpenYesNoDialog, setIsOpenYesNoDialog] = useState(false);
   const [assetNewDialogIsOpen, setAssetNewDialogIsOpen] = useState(false);
@@ -85,6 +85,14 @@ export default function Assets() {
             </Button>
           )}
           <Button
+            onClick={(event) => {
+              setCurrentEditText("摄影");
+            }}
+            startIcon={<IconPlus stroke={0.5} />}
+          >
+            测试编辑
+          </Button>
+          <Button
             onClick={(event) => setAssetNewDialogIsOpen(true)}
             startIcon={<IconPlus stroke={0.5} />}
           >
@@ -96,7 +104,7 @@ export default function Assets() {
         selectionModel={selectionModel}
         onSelectionModelChange={onSelectionModelChange}
         itemsRef={gridRef}
-        disableEvent={IsOpenYesNoDialog || currentEditText != null}
+        disableEvent={IsOpenYesNoDialog}
       >
         <Grid container ref={gridRef} spacing={2}>
           {assets &&
@@ -114,7 +122,13 @@ export default function Assets() {
                   onClick={(event) => {
                     navigate(`/videos/${asset.name}`);
                   }}
-                  isEdit={currentEditText && currentEditText == asset.name}
+                  setCurrentEditText={(value) => {
+                    if (value != null) {
+                      setSelectionModel([]);
+                    }
+                    setCurrentEditText(value);
+                  }}
+                  currentEditText={currentEditText}
                   checked={selectionModel.includes(asset.name)}
                   cover={asset.cover}
                   title={asset.name}

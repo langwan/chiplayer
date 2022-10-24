@@ -4,7 +4,6 @@ import {
   CardMedia,
   IconButton,
   Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons";
@@ -22,7 +21,6 @@ export default function AssetItem(props) {
           color: props.checked ? "#fff" : "",
           margin: props.checked ? "0" : "4px",
         },
-
         "& .MuiCardContent-root:last-child": {
           padding: 1,
         },
@@ -38,46 +36,49 @@ export default function AssetItem(props) {
         }
         component="video"
       />
-      <Tooltip title={props.title} placement={"top"}>
-        <CardContent>
-          <Stack
-            direction={"row"}
-            justifyContent={"space-between"}
-            alignItems="center"
+      <CardContent>
+        <Stack
+          direction={"row"}
+          justifyContent={"space-between"}
+          alignItems="center"
+        >
+          <Typography
+            noWrap={true}
+            variant="h5"
+            component="div"
+            sx={{ flexGrow: 1, color: props.checked ? "white" : "" }}
           >
-            <Typography
-              noWrap={true}
-              variant="h5"
-              component="div"
-              sx={{ flexGrow: 1, color: props.checked ? "white" : "" }}
-            >
-              <ChihuoEditText
-                name={props.title}
-                isEdit={props.isEdit}
-                content={props.title}
-                onSave={(name, value) => {
-                  console.log("edit stop", name, value);
-                }}
-              ></ChihuoEditText>
-            </Typography>
-
-            <IconButton
-              onClick={async (event) => {
-                backendAxios.post("/rpc/OpenDataFile", {
-                  path: props.path,
-                });
+            <ChihuoEditText
+              TextProps={{ sx: { color: props.checked ? "white" : "" } }}
+              name={props.title}
+              isEdit={props.currentEditText == props.title}
+              content={props.title}
+              onStop={(name, value) => {
+                props.setCurrentEditText(null);
               }}
-            >
-              <IconSearch
-                color={props.checked ? "white" : "#677684"}
-                stroke={1.4}
-                width={16}
-                height={16}
-              />
-            </IconButton>
-          </Stack>
-        </CardContent>
-      </Tooltip>
+              onSave={(name, value) => {
+                props.setCurrentEditText(null);
+                console.log("edit stop", name, value);
+              }}
+            ></ChihuoEditText>
+          </Typography>
+
+          <IconButton
+            onClick={async (event) => {
+              backendAxios.post("/rpc/OpenDataFile", {
+                path: props.path,
+              });
+            }}
+          >
+            <IconSearch
+              color={props.checked ? "white" : "#677684"}
+              stroke={1.4}
+              width={16}
+              height={16}
+            />
+          </IconButton>
+        </Stack>
+      </CardContent>
     </Card>
   );
 }
