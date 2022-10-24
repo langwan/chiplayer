@@ -105,27 +105,30 @@ export const ChihuoTable = ({
 
   useEffect(() => {
     if (sorting && rows.length > 0) {
-      const result = rows.sort((a, b) => {
-        if (
-          typeof a[sorting.field] === "string" ||
-          a[sorting.field] instanceof String
-        ) {
-          return sorting.sort == "asc"
-            ? a[sorting.field].localeCompare(b[sorting.field])
-            : b[sorting.field].localeCompare(a[sorting.field]);
-        } else {
-          return sorting.sort == "asc"
-            ? a[sorting.field] - b[sorting.field]
-            : b[sorting.field] - a[sorting.field];
+      let result = rows;
+      let col = columnMap[sorting.field];
+      let type = col.type ? col.type : "string";
+      console.log("sorting", col, type, sorting);
+      result.sort((a, b) => {
+        switch (type) {
+          case "number":
+            return sorting.sort == "asc"
+              ? a[sorting.field] - b[sorting.field]
+              : b[sorting.field] - a[sorting.field];
+            break;
+          case "dataTime":
+            return sorting.sort == "asc"
+              ? new Date(a[sorting.field]) - new Date(b[sorting.field])
+              : new Date(b[sorting.field]) - new Date(a[sorting.field]);
+            break;
+          default:
+            return sorting.sort == "asc"
+              ? a[sorting.field].localeCompare(b[sorting.field])
+              : b[sorting.field].localeCompare(a[sorting.field]);
         }
       });
+      console.log("setItems", result);
       setItems([...result]);
-    } else {
-      if (rows.length > 0) {
-        setItems([...rows]);
-      } else {
-        setItems([]);
-      }
     }
 
     return () => {};
