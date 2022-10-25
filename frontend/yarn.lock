@@ -1077,10 +1077,10 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chihuo/edittext@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@chihuo/edittext/-/edittext-1.0.5.tgz#4dbbae817a0d097231d59d0023eb73876da72dab"
-  integrity sha512-Cjd4QLDgkSuTnNTtcGisUsvFmr1rdazXO/6twTSGAb4VwozYNpm/dqJUyojfoYpNWKKjGJO+vJpzUrggntgCMA==
+"@chihuo/edittext@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@chihuo/edittext/-/edittext-1.0.6.tgz#f14c6ad91ac9071da372a8269094ae3f68775c32"
+  integrity sha512-tjU6QW3Fyb8QL43KmeuwMeQhXwKruk7+QjcvQETg7btaPq/tS3icsUUqalchiRpb43K+HOAC6Mb1peqYoHu3QA==
   dependencies:
     "@mui/material" "^5.10.10"
     react "^18.2.0"
@@ -1092,10 +1092,10 @@
   dependencies:
     react "^18.2.0"
 
-"@chihuo/table@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@chihuo/table/-/table-1.0.11.tgz#5542d7d1499fbf5d49cf573fb4cc913b9406220d"
-  integrity sha512-ftZgO6cLQILtic01DDyYznSNYIZlrc2y7KJ6QDZ8IQupkB+qH4Kg13uKDghCtyeFMXg3B20ZIRwXAoLWha2OhA==
+"@chihuo/table@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@chihuo/table/-/table-1.0.12.tgz#410852e31b78d826ccb4cecd38b8e7bcb9ebafd4"
+  integrity sha512-WNdGRGjXwb9EvHcrZ3enl0bWpGRntL+CR2EvejowquHvt1Q7y8se6nW6dmIPoXAG3qqapikZQZCBHWM/fbvYtA==
   dependencies:
     "@emotion/react" "^11.10.4"
     "@emotion/styled" "^11.10.4"

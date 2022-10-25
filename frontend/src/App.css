@@ -12,3 +12,18 @@ html, body, #root {
 #root {
     min-height: 100vh;
 }
+
+.ChihuoTableHeader-root,.MuiTypography-body1,.ChihuoTable-cell, .ChihuoEditText-root, .Nav-Item-menu,.Preferences-Title  {
+    font-size: 1rem;
+}
+
+
+
+.Preferences-Title {
+    font-weight: bold !important;
+}
+
+
+
+
+

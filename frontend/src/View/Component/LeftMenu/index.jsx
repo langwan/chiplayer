@@ -5,7 +5,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { IconHelp, IconMovie, IconNotes } from "@tabler/icons";
+import { IconHelp, IconMovie, IconNotes, IconSettings } from "@tabler/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 export default function LeftMenu(props) {
   let navigate = useNavigate();
@@ -27,6 +27,11 @@ export default function LeftMenu(props) {
       name: "/document",
       displayName: "手册",
       icon: <IconHelp stroke={0.5} />,
+    },
+    {
+      name: "/preferences",
+      displayName: "首选项",
+      icon: <IconSettings stroke={0.5} />,
     },
   ];
 
@@ -50,6 +55,7 @@ export default function LeftMenu(props) {
       <List sx={{ paddingTop: 0 }}>
         {menus.map((menu) => (
           <ListItemButton
+            className={"Nav-Item-menu"}
             key={menu.name}
             sx={{
               backgroundColor: location.pathname == menu.name ? "#fff" : "",
