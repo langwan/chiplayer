@@ -7,7 +7,7 @@ require (
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/json-iterator/go v1.1.12
-	github.com/langwan/langgo v0.5.8
+	github.com/langwan/langgo v0.5.9
 	github.com/ncruces/zenity v0.9.0
 	github.com/stretchr/testify v1.8.0
 	google.golang.org/grpc v1.49.0

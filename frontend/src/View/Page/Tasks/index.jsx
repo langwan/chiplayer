@@ -1,9 +1,16 @@
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
+import { ChihuoTable } from "@chihuo/table";
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { IconEraser, IconFile, IconSearch } from "@tabler/icons";
 import { backendAxios } from "Common/Request";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { ChihuoTable } from "View/ChihuoTable";
 function formatFileSize(size) {
   var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
   return (
@@ -84,9 +91,18 @@ export default () => {
     setSelectionModel([...newSelection]);
   };
   return (
-    <Stack>
-      <Box>
+    <Stack direction={"column"} justifyContent="space-between">
+      <Stack
+        direction={"row"}
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Breadcrumbs sx={{ ml: 1 }} aria-label="breadcrumb">
+          <Typography>任务</Typography>
+        </Breadcrumbs>
+
         <Button
+          sx={{ ml: 1 }}
           onClick={async (event) => {
             if (
               selectionModel.length != 0 &&
@@ -106,14 +122,15 @@ export default () => {
             : ""}
           清除
         </Button>
-      </Box>
+      </Stack>
       <ChihuoTable
+        sx={{ ml: -1 }}
         onSelectionModelChange={onSelectionModelChange}
         selectionModel={selectionModel}
         cellModesModel={cellModesModel}
         rowHeight={40}
         headerHeight={40}
-        rows={[...tasks]}
+        rows={tasks}
         columns={columns}
         getRowId={(row) => "" + row.id}
         initialState={{ sorting: { field: "updated_at", sort: "desc" } }}

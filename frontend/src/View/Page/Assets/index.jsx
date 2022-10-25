@@ -1,6 +1,5 @@
 import { ChihuoSelection } from "@chihuo/selection";
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Breadcrumbs, Button, Link, Stack } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { IconPlus, IconTrash } from "@tabler/icons";
 import { sioPushRegister, sioPushUnRegister } from "App";
@@ -10,13 +9,6 @@ import { useNavigate } from "react-router-dom";
 import AssetNewDialog from "View/Dialog/AssetNewDialog";
 import YesNoDialog from "View/Dialog/YesNoDialog";
 import AssetItem from "../../Component/AssetItem/index";
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
 
 export default function Assets() {
   const [selectionModel, setSelectionModel] = useState([]);
@@ -65,15 +57,21 @@ export default function Assets() {
   };
 
   return (
-    <Stack direction={"column"} justifyContent="space-between">
+    <Stack mt={-1} direction={"column"} justifyContent="space-between">
       <Stack
         direction={"row"}
         alignItems="center"
         justifyContent="space-between"
-        spacing={1}
+        height={42}
+        p={1}
+        pl={0}
       >
-        <Typography>资料库</Typography>
-        <Box>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link underline="hover" color="inherit" href="/app">
+            资料库
+          </Link>
+        </Breadcrumbs>
+        <Stack direction={"row"} alignItems="center" justifyContent="flex-end">
           {selectionModel.length > 0 && (
             <Button
               onClick={(event) => {
@@ -91,13 +89,13 @@ export default function Assets() {
           >
             新建
           </Button>
-        </Box>
+        </Stack>
       </Stack>
       <ChihuoSelection
         selectionModel={selectionModel}
         onSelectionModelChange={onSelectionModelChange}
         itemsRef={gridRef}
-        disableEvent={IsOpenYesNoDialog}
+        disableEvent={IsOpenYesNoDialog || currentEditText != null}
       >
         <Grid container ref={gridRef} spacing={2}>
           {assets &&

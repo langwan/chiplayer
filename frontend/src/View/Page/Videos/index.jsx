@@ -17,6 +17,7 @@ import VideoItem from "View/Component/VideoItem";
 import YesNoDialog from "View/Dialog/YesNoDialog";
 export const Videos = (props) => {
   const [currentEditText, setCurrentEditText] = useState(null);
+  const [editing, setEditing] = useState(false);
   const [items, setItems] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
   const gridRef = useRef();
@@ -59,14 +60,16 @@ export const Videos = (props) => {
     <Stack
       direction={"column"}
       sx={{ height: "100%" }}
+      mt={-1}
       justifyContent="flex-start"
-      spacing={1}
     >
       <Stack
         direction={"row"}
         alignItems="center"
         justifyContent="space-between"
-        spacing={1}
+        height={42}
+        p={1}
+        pl={0}
       >
         <Breadcrumbs aria-label="breadcrumb">
           <Link underline="hover" color="inherit" href="/app">
@@ -87,7 +90,7 @@ export const Videos = (props) => {
           )}
           <Button
             onClick={(event) => {
-              backendAxios.post("/rpc/FileAdd", { assetName });
+              backendAxios.post("/rpc/FileAdd", { asset_name: assetName });
             }}
             startIcon={<IconFileImport stroke={0.5} />}
           >
@@ -96,8 +99,9 @@ export const Videos = (props) => {
         </Box>
       </Stack>
       <Box sx={{ flexGrow: 1 }}>
+        {console.log("editing", IsOpenYesNoDialog || currentEditText != null)}
         <ChihuoSelection
-          disableEvent={IsOpenYesNoDialog}
+          disableEvent={IsOpenYesNoDialog || currentEditText != null}
           selectionModel={selectionModel}
           onSelectionModelChange={onSelectionModelChange}
           itemsRef={gridRef}
@@ -117,6 +121,7 @@ export const Videos = (props) => {
                   <VideoItem
                     checked={selectionModel.includes(video.name)}
                     video={video}
+                    setEditing={setEditing}
                     setCurrentEditText={(value) => {
                       if (value != null) {
                         setSelectionModel([]);

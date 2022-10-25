@@ -6,7 +6,6 @@ import (
 	helper_gen "github.com/langwan/langgo/helpers/gen"
 	"github.com/langwan/langgo/helpers/os"
 	helperString "github.com/langwan/langgo/helpers/string"
-	"path"
 	"path/filepath"
 	"sync"
 )
@@ -74,17 +73,14 @@ func RequestStart(task *TaskModel) (err error) {
 	res := sqlite.Get().First(&asset, "name=?", req.Task.AssetName)
 	if res.RowsAffected == 0 {
 		dstName := filepath.Base(req.Task.DstPath)
-		playerUri := path.Join("/player", req.Task.AssetName, dstName)
-
 		asset = AssetModel{
 			Name:  req.Task.AssetName,
-			Cover: playerUri,
+			Cover: dstName,
 		}
 		sqlite.Get().Create(&asset)
 	} else {
 		if helperString.IsEmpty(asset.Name) {
 			dstName := filepath.Base(req.Task.DstPath)
-			//playerUri := path.Join("/player", req.Task.AssetName, dstName)
 			asset.Cover = dstName
 			sqlite.Get().Save(&asset)
 		}

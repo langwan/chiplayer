@@ -1,3 +1,4 @@
+import { ChihuoEditText } from "@chihuo/edittext";
 import {
   Card,
   CardContent,
@@ -8,7 +9,6 @@ import {
 } from "@mui/material";
 import { IconSearch } from "@tabler/icons";
 import { backendAxios } from "Common/Request";
-import { ChihuoEditText } from "View/ChihuoEditText";
 export default function AssetItem(props) {
   return (
     <Card
@@ -19,7 +19,7 @@ export default function AssetItem(props) {
           border: props.checked ? "4px solid #24A7F2" : "none",
           backgroundColor: props.checked ? "#24A7F2" : "#F5F5F5",
           color: props.checked ? "#fff" : "",
-          margin: props.checked ? "0" : "4px",
+          margin: props.checked ? "-4px" : "0",
         },
         "& .MuiCardContent-root:last-child": {
           padding: 1,
@@ -53,6 +53,9 @@ export default function AssetItem(props) {
               name={props.title}
               isEdit={props.currentEditText == props.title}
               content={props.title}
+              onStart={(name) => {
+                props.setCurrentEditText(name);
+              }}
               onStop={(name, value) => {
                 props.setCurrentEditText(null);
               }}

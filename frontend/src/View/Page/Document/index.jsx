@@ -1,11 +1,11 @@
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import "./Markdown.css";
 const markdown = `
 
-ChiPlayer 是一款本地视频的管理和播放软件。作者 langwan <langwanluo@126.com>
+## 手册
 
-## 使用
+ChiPlayer 是一款本地视频的管理和播放软件。作者 langwan <langwanluo@126.com>
 
 ### 首次启动
 
@@ -23,16 +23,20 @@ ChiPlayer 是一款本地视频的管理和播放软件。作者 langwan <langwa
 
 删除 - 删除资料夹，所有视频也全部被清除，慎用
 
+改名 - 双击资料夹名称改名
+
 ### 视频
 
 播放 - 点视频封面可以播放视频
+
+改名 - 双击视频名称改名
 
 ### 任务
 
 导入视频 - 会出现在任务列表当中，清除任务不会删除视频
 删除 - 删除当前视频（无法找回）
 
-## 框选
+### 框选
 
 框选 - 资料夹列表、视频列表可以使用鼠标框选文件
 
@@ -40,7 +44,7 @@ ChiPlayer 是一款本地视频的管理和播放软件。作者 langwan <langwa
 
 shift - 按住shift 会新增或移除当前选择
 
-## 定制开发
+### 定制开发
 
 如需要定制或二次开发，可通过下面的方式联系作者：
 
@@ -54,8 +58,8 @@ B站 [https://space.bilibili.com/401571418](https://space.bilibili.com/401571418
 
 export default () => {
   return (
-    <Box>
+    <Stack direction={"column"} justifyContent="space-between">
       <ReactMarkdown className={"markdown"} children={markdown} />
-    </Box>
+    </Stack>
   );
 };

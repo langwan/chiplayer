@@ -6,7 +6,6 @@ import {
   ListItemText,
 } from "@mui/material";
 import { IconHelp, IconMovie, IconNotes } from "@tabler/icons";
-import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 export default function LeftMenu(props) {
   let navigate = useNavigate();
@@ -30,10 +29,6 @@ export default function LeftMenu(props) {
       icon: <IconHelp stroke={0.5} />,
     },
   ];
-
-  useEffect(() => {
-    console.log(location);
-  }, []);
 
   return (
     <Drawer

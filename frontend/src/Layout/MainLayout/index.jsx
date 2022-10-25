@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { IconMenu2 } from "@tabler/icons";
 import { useState } from "react";
@@ -31,7 +31,13 @@ export default () => {
       direction={"column"}
       justifyContent={"flex-start"}
     >
-      <Box sx={{ height: 40 }} pl={30}>
+      <Stack
+        direction={"row"}
+        justifyContent={"flex-start"}
+        alignItems="center"
+        sx={{ height: 40 }}
+        pl={30}
+      >
         CHIPLAYER
         <IconButton
           onClick={() => {
@@ -40,7 +46,7 @@ export default () => {
         >
           <IconMenu2 stroke={0.5} />
         </IconButton>
-      </Box>
+      </Stack>
       <Stack
         sx={{ flexGrow: 1 }}
         direction={"row"}

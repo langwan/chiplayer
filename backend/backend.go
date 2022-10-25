@@ -15,7 +15,6 @@ import (
 	"path"
 	"path/filepath"
 	"sort"
-	"strings"
 )
 
 type BackendService struct {
@@ -289,7 +288,7 @@ func (b BackendService) FileRename(ctx context.Context, request *FileRenameReque
 	assetPath := filepath.Join(dataPath, request.AssetName)
 	filePath := filepath.Join(assetPath, request.Name)
 	ext := filepath.Ext(filePath)
-	newName := fileNameWithoutExtTrimSuffix(request.NewName)
+	newName := helper_os.FileNameWithoutExt(request.NewName)
 	fileNewPath := filepath.Join(assetPath, newName+ext)
 	err := os.Rename(filePath, fileNewPath)
 	msg := fmt.Sprint(err)
@@ -298,8 +297,4 @@ func (b BackendService) FileRename(ctx context.Context, request *FileRenameReque
 	}
 	PushMessageVideos()
 	return &Empty{}, nil
-}
-
-func fileNameWithoutExtTrimSuffix(fileName string) string {
-	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
 }
