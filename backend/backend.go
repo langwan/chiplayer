@@ -15,6 +15,7 @@ import (
 	"path"
 	"path/filepath"
 	"sort"
+	"strconv"
 )
 
 type BackendService struct {
@@ -297,4 +298,42 @@ func (b BackendService) FileRename(ctx context.Context, request *FileRenameReque
 	}
 	PushMessageVideos()
 	return &Empty{}, nil
+}
+
+type SetFirstTimeSelectDataDirResponse struct {
+	Path string `json:"path"`
+}
+
+func (b BackendService) SetFirstTimeSelectDataDir(ctx context.Context, reqeust *Empty) (*SetFirstTimeSelectDataDirResponse, error) {
+	go func() {
+		dir, err := zenity.SelectFile(zenity.Directory())
+		if err == nil {
+			PushMessageSelectDataDir(dir)
+		}
+	}()
+	return &SetFirstTimeSelectDataDirResponse{}, nil
+}
+
+type SetFirstTimeRequest struct {
+	IsMove   bool   `json:"is_move"`
+	DataPath string `json:"data_path"`
+}
+
+func (b BackendService) SetFirstTime(ctx context.Context, request *SetFirstTimeRequest) (*Empty, error) {
+	p := PreferenceModel{
+		Key:   DataPath,
+		Value: request.DataPath,
+	}
+	sqlite.Get().Create(&p)
+	p = PreferenceModel{
+		Key:   IsMove,
+		Value: strconv.FormatBool(request.IsMove),
+	}
+	sqlite.Get().Create(&p)
+	return &Empty{}, nil
+}
+
+func (b BackendService) GetPreferences(ctx context.Context, request *Empty) (models []PreferenceModel, err error) {
+	sqlite.Get().Find(&models)
+	return models, nil
 }

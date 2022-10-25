@@ -6,11 +6,14 @@ import {
   ListItemText,
 } from "@mui/material";
 import { IconHelp, IconMovie, IconNotes, IconSettings } from "@tabler/icons";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import FirstTimeDialog from "View/Dialog/FirstTimeDialog";
+import { sioPushRegister, sioPushUnRegister } from "../../../App";
 export default function LeftMenu(props) {
   let navigate = useNavigate();
   const location = useLocation();
-
+  const [isOpenFirstTimeDialog, setIsOpenFirstTimeDialog] = useState(false);
   let menus = [
     {
       name: "/",
@@ -34,6 +37,15 @@ export default function LeftMenu(props) {
       icon: <IconSettings stroke={0.5} />,
     },
   ];
+  const firstTime = useCallback((message) => {
+    setIsOpenFirstTimeDialog(true);
+  }, []);
+  useEffect(() => {
+    sioPushRegister("firstTime", firstTime);
+    return () => {
+      sioPushUnRegister("firstTime", firstTime);
+    };
+  }, []);
 
   return (
     <Drawer
@@ -65,10 +77,20 @@ export default function LeftMenu(props) {
             }}
           >
             <ListItemIcon>{menu.icon}</ListItemIcon>
-            <ListItemText>{menu.displayName}</ListItemText>
+            <ListItemText
+              sx={{
+                "& .MuiTypography-root": {
+                  fontWeight:
+                    location.pathname == menu.name ? "bold" : "normal",
+                },
+              }}
+            >
+              {menu.displayName}
+            </ListItemText>
           </ListItemButton>
         ))}
       </List>
+      <FirstTimeDialog open={isOpenFirstTimeDialog} />
     </Drawer>
   );
 }

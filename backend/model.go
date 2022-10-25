@@ -3,8 +3,8 @@ package main
 import "gorm.io/gorm"
 
 type PreferenceModel struct {
-	Key   string `gorm:"primaryKey"`
-	Value string
+	Key   string `gorm:"primaryKey" json:"key"`
+	Value string `json:"value"`
 }
 
 type TaskModel struct {
