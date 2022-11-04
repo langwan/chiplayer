@@ -6,17 +6,16 @@ require (
 	github.com/ambelovsky/gosf-socketio v0.0.0-20220810204405-0f97832ec7af
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
-	github.com/json-iterator/go v1.1.12
-	github.com/langwan/langgo v0.5.9
+	github.com/langwan/langgo v0.5.14
 	github.com/ncruces/zenity v0.9.0
 	github.com/stretchr/testify v1.8.0
 	google.golang.org/grpc v1.49.0
-	google.golang.org/protobuf v1.28.1
 	gorm.io/gorm v1.24.0
 )
 
 require (
 	github.com/akavel/rsrc v0.10.2 // indirect
+	github.com/aquilax/truncate v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dchest/jsmin v0.0.0-20220218165748-59f39799265f // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -32,6 +31,7 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.0 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -51,6 +51,7 @@ require (
 	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20220915135415-7fd63a7952de // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/sqlite v1.4.2 // indirect

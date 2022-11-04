@@ -20,6 +20,9 @@ var Preferences = _Preferences{isMove: true}
 
 func (p *_Preferences) GetString(key string, def string) (value string) {
 	model := PreferenceModel{}
+	if !CheckFirstTimeFile() {
+		PushMessageFirstTime()
+	}
 	res := sqlite.Get().First(&model, "key=?", key)
 	if res.RowsAffected > 0 {
 		return model.Value

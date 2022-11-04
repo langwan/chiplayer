@@ -90,7 +90,10 @@ export default function LeftMenu(props) {
           </ListItemButton>
         ))}
       </List>
-      <FirstTimeDialog open={isOpenFirstTimeDialog} />
+      <FirstTimeDialog
+        open={isOpenFirstTimeDialog}
+        onClose={(event) => setIsOpenFirstTimeDialog(false)}
+      />
     </Drawer>
   );
 }

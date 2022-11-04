@@ -6,6 +6,11 @@ const (
 	AppDisplayName = "CHIPLAYER"
 )
 
+var (
+	Version = "1.0.0"
+	Build   = "2022-11-03T07:13:31+0800"
+)
+
 type configuration struct {
 	HttpPort int `yaml:"http_port"`
 }

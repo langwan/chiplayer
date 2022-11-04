@@ -3,3 +3,5 @@ frontend/public/test
 .idea
 backend/logs
 backend/samples
+window/dist
+window/src/bin

@@ -21,6 +21,10 @@ func GetDefaultDataPath() string {
 	return path
 }
 
+func GetFirstFilePath() string {
+	return filepath.Join(GetAppStorePath(), "first")
+}
+
 func GetDatabasePath() string {
 	return path.Join(GetAppStorePath(), app.AppName+".db")
 }

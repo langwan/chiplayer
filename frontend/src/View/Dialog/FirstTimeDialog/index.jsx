@@ -16,7 +16,6 @@ import { sioPushUnRegister } from "App";
 import { useCallback, useEffect, useState } from "react";
 import { sioPushRegister } from "../../../App";
 export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
-  const [assetName, setAssetName] = useState("");
   const [values, setValues] = useState({});
   const onSelectDataPath = async (event) => {
     await backendAxios.post("/rpc/SetFirstTimeSelectDataDir", {});
@@ -25,7 +24,45 @@ export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
     console.log("values", values);
     setValues({ ...values, ["data_path"]: message });
   }, []);
+  const loader = async () => {
+    let response = await backendAxios.post("/rpc/GetPreferences", {});
+    setValues({
+      data_path: getStringValue(response.data.body, "data_path"),
+      is_move: getBooleanValue(response.data.body, "is_move"),
+    });
+  };
+  const getStringValue = (preferences, key) => {
+    if (preferences.length == 0) {
+      return "";
+    } else {
+      let p = preferences.filter((p) => p.key == key);
+
+      if (p.length == 0) {
+        return "";
+      } else {
+        return p[0].value;
+      }
+    }
+  };
+  const getBooleanValue = (preferences, key) => {
+    if (preferences.length == 0) {
+      return false;
+    } else {
+      let p = preferences.filter((p) => p.key == key);
+
+      if (p.length == 0) {
+        return false;
+      } else {
+        if (p[0].value == "true") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  };
   useEffect(() => {
+    loader();
     sioPushRegister("selectDataDir", onPushMessage);
     return () => {
       sioPushUnRegister("selectDataDir", onPushMessage);
@@ -57,7 +94,7 @@ export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
             spacing={1}
           >
             <InputBase
-              value={values.data_path || ""}
+              value={values.data_path}
               className={"Preferences-Input"}
               sx={{ flex: 1 }}
             />
@@ -79,7 +116,7 @@ export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
                   console.log({ ...values, ["is_move"]: event.target.checked });
                   setValues({ ...values, ["is_move"]: event.target.checked });
                 }}
-                checked={values.is_move || false}
+                checked={values.is_move}
               />
             }
             label="控制导入视频后是否删除原文件（删除后无法还原）"

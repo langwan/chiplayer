@@ -273,7 +273,7 @@ func (b BackendService) AssetRename(ctx context.Context, request *AssetRenameReq
 	assetPath := filepath.Join(dataPath, request.Name)
 	newAssetPath := filepath.Join(dataPath, request.NewName)
 	os.Rename(assetPath, newAssetPath)
-	sqlite.Get().Debug().Model(&AssetModel{}).Where("name=?", request.Name).Update("name", request.NewName)
+	sqlite.Get().Model(&AssetModel{}).Where("name=?", request.Name).Update("name", request.NewName)
 	PushMessageAssets()
 	return &Empty{}, nil
 }
@@ -324,16 +324,22 @@ func (b BackendService) SetFirstTime(ctx context.Context, request *SetFirstTimeR
 		Key:   DataPath,
 		Value: request.DataPath,
 	}
-	sqlite.Get().Create(&p)
+	sqlite.Get().Save(&p)
 	p = PreferenceModel{
 		Key:   IsMove,
 		Value: strconv.FormatBool(request.IsMove),
 	}
-	sqlite.Get().Create(&p)
+	sqlite.Get().Save(&p)
+	helper_os.TouchFile(helper.GetFirstFilePath(), true, true)
 	return &Empty{}, nil
 }
 
 func (b BackendService) GetPreferences(ctx context.Context, request *Empty) (models []PreferenceModel, err error) {
 	sqlite.Get().Find(&models)
 	return models, nil
+}
+
+func (b BackendService) Quit(ctx context.Context, request *Empty) (*Empty, error) {
+	os.Exit(0)
+	return nil, nil
 }

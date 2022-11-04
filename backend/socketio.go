@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/app"
 	"backend/helper"
 	gosocketio "github.com/ambelovsky/gosf-socketio"
 	"github.com/ambelovsky/gosf-socketio/transport"
@@ -35,34 +36,32 @@ func NewSocketIO(g *gin.Engine) {
 	socketio = gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
 	g.Any("/socket.io/*any", gin.WrapH(socketio))
 	socketio.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
-		c.Emit("hello", "im ss")
-
-		exists := helper_os.FileExists(helper.GetDefaultDataPath())
-		if !exists {
+		PushAppInfo()
+		if !CheckFirstTimeFile() {
 			PushMessageFirstTime()
-			return
 		}
-		dbName := helper.GetDatabasePath()
-		exists = helper_os.FileExists(dbName)
-		if !exists {
-			sqlite.Get().AutoMigrate(&PreferenceModel{}, &TaskModel{}, &AssetModel{})
-			PushMessageFirstTime()
-			return
-		}
-
-		p := PreferenceModel{}
-
-		res := sqlite.Get().First(&p, "key=?", DataPath)
-		if res.RowsAffected == 0 {
-			PushMessageFirstTime()
-			return
-		}
-
-		go PushMessageTasks()
 	})
 }
 
+func CheckFirstTimeFile() bool {
+	p := helper.GetFirstFilePath()
+	return helper_os.FileExists(p)
+}
+
 func PushMessageFirstTime() {
+
+	sqlite.Get().AutoMigrate(&PreferenceModel{}, &TaskModel{}, &AssetModel{})
+	p := PreferenceModel{
+		Key:   DataPath,
+		Value: helper.GetDefaultDataPath(),
+	}
+	sqlite.Get().Create(&p)
+	p = PreferenceModel{
+		Key:   IsMove,
+		Value: "false",
+	}
+	sqlite.Get().Create(&p)
+
 	message := Message{
 		Method: "firstTime",
 		Body:   nil,
@@ -125,4 +124,15 @@ func PushMessageSelectDataDir(dir string) {
 	log.Logger("app", "socketio").Info().Interface("message", message).Msg("push")
 	socketio.BroadcastToAll("push", message)
 
+}
+
+func PushAppInfo() {
+	message := Message{
+		Method: "selectDataDir",
+		Body: struct {
+			Version string
+			Build   string
+		}{Version: app.Version, Build: app.Build},
+	}
+	socketio.BroadcastToAll("app", message)
 }

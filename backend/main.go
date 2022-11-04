@@ -7,17 +7,17 @@ import (
 	"github.com/langwan/langgo"
 	"github.com/langwan/langgo/components/sqlite"
 	"github.com/langwan/langgo/core"
+	"github.com/langwan/langgo/core/log"
 )
 
 func init() {
 	dbName := helper.GetDatabasePath()
 	langgo.Run(&sqlite.Instance{Path: dbName})
-	if core.EnvName == core.Development {
-		sqlite.Get().AutoMigrate(&PreferenceModel{}, &TaskModel{}, &AssetModel{})
-	}
+	log.Logger("app", "init").Debug().Str("version", app.Version).Str("build", app.Build).Send()
 }
 
 func main() {
+
 	var port int
 	flag.IntVar(&port, "port", 8000, "port")
 	flag.Parse()

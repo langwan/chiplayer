@@ -1,0 +1,45 @@
+{
+  "name": "chiplayer",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0",
+    "electron": "^21.2.2"
+  },
+  "scripts": {
+    "start": "electron-forge start",
+    "dev": "NODE_ENV=development electron-forge start",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win --mac"
+  },
+  "dependencies": {
+    "about-window": "^1.15.2",
+    "electron-fetch": "^1.9.1",
+    "freeport": "^1.0.5"
+  },"build": {
+    "appId": "chiplayer",
+    "mac": {
+      "category": "langwan.chihuo.chiplayer",
+      "icon": "./build/icon.png",
+      "target": {
+        "target": "default",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
+    },
+    "win": {
+      "icon": "./build/icon@0.5x.png",
+      "target": {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    },
+
+    "asar": false
+  }
+}
