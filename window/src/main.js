@@ -65,15 +65,19 @@ app.whenReady().then(() => {
           {
             label: "关于 chiplayer",
             click() {
-              openAboutWindow({
-                icon_path: __dirname + "/bin/frontend/icon.png",
-                product_name: "chiplayer",
-                bug_report_url: "https://github.com/langwan/chiplayer",
-                copyright: "2022 痴货发明家(langwan)",
-                homepage: "https://space.bilibili.com/401571418",
-                description: "订制开发请找作者 B站 痴货发明家",
-                license: "MIT",
-                use_version_info: true,
+              fetch("http://127.0.0.1:" + backendPort + "/rpc/GetAppInfo", {
+                method: "post",
+              }).then(function (response) {
+                openAboutWindow({
+                  icon_path: __dirname + "/bin/frontend/icon.png",
+                  product_name: "chiplayer",
+                  bug_report_url: "https://github.com/langwan/chiplayer",
+                  copyright: "2022 痴货发明家(langwan)",
+                  homepage: "https://space.bilibili.com/401571418",
+                  description: "订制开发请找作者 B站 痴货发明家",
+                  license: "MIT",
+                  use_version_info: true,
+                });
               });
             },
           },

@@ -1,16 +1,25 @@
 import {
   Drawer,
   List,
+  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { IconHelp, IconMovie, IconNotes, IconSettings } from "@tabler/icons";
+import {
+  IconHelp,
+  IconMovie,
+  IconNotes,
+  IconSettings,
+  IconVersions,
+} from "@tabler/icons";
+import { sioPushRegister, sioPushUnRegister } from "App";
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import FirstTimeDialog from "View/Dialog/FirstTimeDialog";
-import { sioPushRegister, sioPushUnRegister } from "../../../App";
 export default function LeftMenu(props) {
+  const appInfo = useSelector((state) => state.app.app);
   let navigate = useNavigate();
   const location = useLocation();
   const [isOpenFirstTimeDialog, setIsOpenFirstTimeDialog] = useState(false);
@@ -89,6 +98,12 @@ export default function LeftMenu(props) {
             </ListItemText>
           </ListItemButton>
         ))}
+        <ListItem>
+          <ListItemIcon>
+            <IconVersions stroke={0.5} />
+          </ListItemIcon>
+          <ListItemText>v{appInfo.version}</ListItemText>
+        </ListItem>
       </List>
       <FirstTimeDialog
         open={isOpenFirstTimeDialog}

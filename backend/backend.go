@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/app"
 	"backend/helper"
 	"context"
 	"errors"
@@ -384,4 +385,16 @@ func (b BackendService) SetPreferences(ctx context.Context, request *SetPreferen
 func (b BackendService) Quit(ctx context.Context, request *Empty) (*Empty, error) {
 	os.Exit(0)
 	return nil, nil
+}
+
+type GetAppInfoResponse struct {
+	Version string `json:"version"`
+	Build   string `json:"build"`
+}
+
+func (b BackendService) GetAppInfo(ctx context.Context, request *Empty) (*GetAppInfoResponse, error) {
+	return &GetAppInfoResponse{
+		Version: app.Version,
+		Build:   app.Build,
+	}, nil
 }

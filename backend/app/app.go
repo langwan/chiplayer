@@ -7,7 +7,7 @@ const (
 )
 
 var (
-	Version = "1.0.0"
+	Version = "1.0.1"
 	Build   = "2022-11-03T07:13:31+0800"
 )
 

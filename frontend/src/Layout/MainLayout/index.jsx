@@ -2,9 +2,11 @@ import { IconButton, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { IconMenu2 } from "@tabler/icons";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 import LeftMenu from "View/Component/LeftMenu";
 export default () => {
+  const appInfo = useSelector((state) => state.app.app);
   const drawerWidth = 240;
   const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     ({ theme, open }) => ({

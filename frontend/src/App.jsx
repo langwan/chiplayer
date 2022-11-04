@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import router from "Router";
 import io from "socket.io-client";
+import { setApp } from "Store/Reducer/AppSlice";
 import { setTasks } from "Store/Reducer/TaskSlice";
 const sio = io(
   process.env.NODE_ENV === "development" ? "ws://127.0.0.1:8000" : "/",
@@ -38,8 +39,11 @@ export default () => {
   useEffect(() => {
     sio.on("connect", (message) => {});
     sio.on("push", (message) => {
+      console.log(message.body);
       if (message.method == "tasks") {
         dispatch(setTasks(message.body));
+      } else if (message.method == "app") {
+        dispatch(setApp(message.body));
       } else {
         if (pushCallbacks[message.method]) {
           pushCallbacks[message.method].forEach((element) => {

@@ -24,4 +24,6 @@ cd ..
 rm -rf window/src/bin
 mv bin window/src
 cd window
+jq ".version=\"${VERSION}\"" package.json > package.json.tmp
+mv package.json.tmp package.json
 yarn dist

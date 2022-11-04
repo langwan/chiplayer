@@ -128,11 +128,11 @@ func PushMessageSelectDataDir(dir string) {
 
 func PushAppInfo() {
 	message := Message{
-		Method: "selectDataDir",
+		Method: "app",
 		Body: struct {
-			Version string
-			Build   string
+			Version string `json:"version"`
+			Build   string `json:"build"`
 		}{Version: app.Version, Build: app.Build},
 	}
-	socketio.BroadcastToAll("app", message)
+	socketio.BroadcastToAll("push", message)
 }

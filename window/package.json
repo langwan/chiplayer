@@ -1,6 +1,6 @@
 {
   "name": "chiplayer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "src/main.js",
   "license": "MIT",
   "devDependencies": {
@@ -17,7 +17,8 @@
     "about-window": "^1.15.2",
     "electron-fetch": "^1.9.1",
     "freeport": "^1.0.5"
-  },"build": {
+  },
+  "build": {
     "appId": "chiplayer",
     "mac": {
       "category": "langwan.chihuo.chiplayer",
@@ -39,7 +40,6 @@
         ]
       }
     },
-
     "asar": false
   }
 }
