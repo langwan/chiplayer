@@ -18,3 +18,10 @@ GOOS=windows GOARCH=amd64 go build -ldflags "-X backend/app.Version=${VERSION} -
 echo "编译前端"
 cd ../frontend
 yarn build
+
+echo "打包"
+cd ..
+rm -rf window/src/bin
+mv bin window/src
+cd window
+yarn dist

@@ -38,9 +38,6 @@ func httpStart(port int) {
 	rg := g.Group("rpc")
 	rg.Any("/*uri", requestProxy())
 
-	a := g.Group("app")
-	a.Any("/*proxyPath", proxy)
-
 	g.GET("/player/:assetName/:uri", func(c *gin.Context) {
 		assetName := c.Param("assetName")
 		uri := c.Param("uri")
@@ -48,6 +45,17 @@ func httpStart(port int) {
 		filename := path.Join(dataPath, assetName, uri)
 		http.ServeFile(c.Writer, c.Request, filename)
 	})
+
+	if core.EnvName == core.Production {
+		g.StaticFS("app", http.Dir("./frontend"))
+		g.NoRoute(func(c *gin.Context) {
+			c.File("./frontend/index.html")
+		})
+	} else {
+		a := g.Group("app")
+		a.Any("/*proxyPath", proxy)
+	}
+
 	g.Run(fmt.Sprintf(":%d", port))
 }
 

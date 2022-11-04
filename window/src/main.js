@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
 const openAboutWindow = require("about-window").default;
 const freeport = require("freeport");
 const fetch = require("electron-fetch").default;
@@ -30,7 +30,7 @@ app.whenReady().then(() => {
         if (win != null) {
           return;
         }
-        console.log("url", url);
+
         win = new BrowserWindow({
           title: "chiplayer",
           maximizable: true,
@@ -38,16 +38,23 @@ app.whenReady().then(() => {
           webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
-
             webSecurity: false,
           },
         });
+
         setTimeout(() => {
           win.loadURL(url, {
             userAgent: "App",
           });
           if (process.env.NODE_ENV == "development")
             win.webContents.openDevTools();
+
+          globalShortcut.register("f5", function () {
+            win.reload();
+          });
+          globalShortcut.register("CommandOrControl+R", function () {
+            win.reload();
+          });
         }, 1000);
       });
 
@@ -61,37 +68,7 @@ app.whenReady().then(() => {
               openAboutWindow({
                 icon_path: __dirname + "/bin/frontend/icon.png",
                 product_name: "chiplayer",
-                bug_report_url: "https://github.com/langwan/chimp3/issues",
-                copyright: "2022 痴货发明家(langwan)",
-                homepage: "https://space.bilibili.com/401571418",
-                description: "订制开发请找作者 B站 痴货发明家",
-                license: "MIT",
-                use_version_info: true,
-              });
-            },
-          },
-          {
-            label: "风格 单击示波器可以切换风格",
-            click() {
-              openAboutWindow({
-                icon_path: __dirname + "/bin/frontend/icon.png",
-                product_name: "CHIMP3",
-                bug_report_url: "https://github.com/langwan/chimp3/issues",
-                copyright: "2022 痴货发明家(langwan)",
-                homepage: "https://space.bilibili.com/401571418",
-                description: "订制开发请找作者 B站 痴货发明家",
-                license: "MIT",
-                use_version_info: true,
-              });
-            },
-          },
-          {
-            label: "播放 支持单曲暂停、多曲连放",
-            click() {
-              openAboutWindow({
-                icon_path: __dirname + "/bin/frontend/icon.png",
-                product_name: "CHIMP3",
-                bug_report_url: "https://github.com/langwan/chimp3/issues",
+                bug_report_url: "https://github.com/langwan/chiplayer",
                 copyright: "2022 痴货发明家(langwan)",
                 homepage: "https://space.bilibili.com/401571418",
                 description: "订制开发请找作者 B站 痴货发明家",
@@ -105,9 +82,7 @@ app.whenReady().then(() => {
       const menu = Menu.buildFromTemplate([appMenu]);
 
       Menu.setApplicationMenu(menu);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   });
 });
 
