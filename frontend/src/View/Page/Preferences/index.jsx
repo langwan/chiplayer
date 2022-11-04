@@ -109,7 +109,7 @@ export default () => {
           }}
           value={values.data_path || ""}
           className={"Preferences-Input"}
-          sx={{ flex: 1 }}
+          sx={{ flex: 1, color: "#677684", fontSize: "0.8rem" }}
         />
         <Button
           variant="outlined"

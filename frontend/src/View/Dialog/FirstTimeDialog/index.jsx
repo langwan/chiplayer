@@ -92,7 +92,7 @@ export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
             <InputBase
               value={values.data_path}
               className={"Preferences-Input"}
-              sx={{ flex: 1 }}
+              sx={{ flex: 1, color: "#677684", fontSize: "0.8rem" }}
             />
             <Button
               variant="outlined"
@@ -106,6 +106,12 @@ export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
             是否移除导入的视频
           </Typography>
           <FormControlLabel
+            sx={{
+              "& .MuiCheckbox-root": {
+                paddingTop: 0,
+                paddingBottom: 0,
+              },
+            }}
             control={
               <Checkbox
                 onChange={(event) => {
