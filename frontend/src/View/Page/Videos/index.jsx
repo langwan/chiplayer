@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import { IconFileImport, IconTrash } from "@tabler/icons";
+import { IconFileImport, IconPolaroid, IconTrash } from "@tabler/icons";
 import { sioPushRegister, sioPushUnRegister } from "App";
 import { backendAxios } from "Common/Request";
 import { useEffect, useRef, useState } from "react";
@@ -78,6 +78,22 @@ export const Videos = (props) => {
           <Typography color="text.primary">{assetName}</Typography>
         </Breadcrumbs>
         <Box>
+          {selectionModel.length == 1 && (
+            <Button
+              onClick={async (event) => {
+                let result = items.filter(
+                  (item) => item.name == selectionModel
+                );
+                backendAxios.post("/rpc/AssetSetCover", {
+                  asset_name: assetName,
+                  cover: result[0].name,
+                });
+              }}
+              startIcon={<IconPolaroid stroke={0.5} />}
+            >
+              设为封面
+            </Button>
+          )}
           {selectionModel.length > 0 && (
             <Button
               onClick={(event) => {

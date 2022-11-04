@@ -1,5 +1,6 @@
 import { ChihuoEditText } from "@chihuo/edittext";
 import {
+  Box,
   Card,
   CardContent,
   CardMedia,
@@ -26,16 +27,32 @@ export default function AssetItem(props) {
         },
       }}
     >
-      <CardMedia
-        onClick={props.onClick}
-        sx={{ height: "auto", objectFit: "cover" }}
-        src={
-          props.cover
-            ? `${props.cover}#t=5,20`
-            : process.env.PUBLIC_URL + "/res/cover.mov"
-        }
-        component="video"
-      />
+      <Box
+        sx={{
+          width: "100%",
+          paddingTop: "56.25%",
+          height: 0,
+          position: "relative",
+        }}
+      >
+        <CardMedia
+          onClick={props.onClick}
+          sx={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            backgroundColor: "#F5F5F5",
+          }}
+          src={
+            props.cover
+              ? `${props.cover}#t=5,20`
+              : process.env.PUBLIC_URL + "/res/cover.mov"
+          }
+          component="video"
+        />
+      </Box>
       <CardContent>
         <Stack
           direction={"row"}

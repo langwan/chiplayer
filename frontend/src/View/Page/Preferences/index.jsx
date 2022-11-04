@@ -123,6 +123,12 @@ export default () => {
         是否移除导入的视频
       </Typography>
       <FormControlLabel
+        sx={{
+          "& .MuiCheckbox-root": {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        }}
         control={
           <Checkbox
             onChange={(event) => {

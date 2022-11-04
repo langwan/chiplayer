@@ -1,9 +1,9 @@
 .markdown h1 {
-    font-size: 2rem;
+    font-size: 1.6rem;
 }
 
 .markdown h2 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
 }
 
 .markdown h2:first-child {
@@ -11,10 +11,10 @@
 }
 
 .markdown h3 {
-    font-size: 1.6rem;
+    font-size: 1.2rem;
 }
 
 .markdown p {
-    font-size: 1.4rem;
+    font-size: 1rem;
 }
 

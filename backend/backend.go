@@ -196,6 +196,29 @@ func (b BackendService) AssetAdd(ctx context.Context, request *AssetAddRequest) 
 	return &Empty{}, nil
 }
 
+type AssetSetCoverRequest struct {
+	AssetName string `json:"asset_name"`
+	Cover     string `json:"cover"`
+}
+
+func (b BackendService) AssetSetCover(ctx context.Context, request *AssetSetCoverRequest) (*Empty, error) {
+
+	asset := AssetModel{
+		Name:  request.AssetName,
+		Cover: request.Cover,
+	}
+
+	res := sqlite.Get().First(&AssetModel{}, "name=?", request.AssetName)
+
+	if res.RowsAffected == 0 {
+		sqlite.Get().Create(&asset)
+	} else {
+		sqlite.Get().Model(&AssetModel{}).Where("name=?", request.AssetName).Update("cover", request.Cover)
+	}
+
+	return &Empty{}, nil
+}
+
 type HelloResponse struct {
 	Message string `json:"message"`
 }
