@@ -12,18 +12,18 @@ import {
 } from "@mui/material";
 import { backendAxios } from "Common/Request";
 
-import { sioPushUnRegister } from "App";
-import { useCallback, useEffect, useState } from "react";
-import { sioPushRegister } from "../../../App";
+import { useEffect, useState } from "react";
 export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
   const [values, setValues] = useState({});
   const onSelectDataPath = async (event) => {
-    await backendAxios.post("/rpc/SetFirstTimeSelectDataDir", {});
+    let response = await backendAxios.post(
+      "/rpc/SetFirstTimeSelectDataDir",
+      {}
+    );
+
+    setValues({ ...values, ["data_path"]: response.data.body.path });
   };
-  const onPushMessage = useCallback((message) => {
-    console.log("values", values);
-    setValues({ ...values, ["data_path"]: message });
-  }, []);
+
   const loader = async () => {
     let response = await backendAxios.post("/rpc/GetPreferences", {});
     setValues({
@@ -63,10 +63,6 @@ export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
   };
   useEffect(() => {
     loader();
-    sioPushRegister("selectDataDir", onPushMessage);
-    return () => {
-      sioPushUnRegister("selectDataDir", onPushMessage);
-    };
   }, []);
 
   return (
@@ -103,7 +99,7 @@ export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
               onClick={onSelectDataPath}
               className={"Preferences-Button"}
             >
-              选择路径...
+              选择新路径...
             </Button>
           </Stack>
           <Typography className={"Preferences-Title"}>
@@ -113,7 +109,6 @@ export default function FirstTimeDialog({ open, maxWidth, onClose, onSubmit }) {
             control={
               <Checkbox
                 onChange={(event) => {
-                  console.log({ ...values, ["is_move"]: event.target.checked });
                   setValues({ ...values, ["is_move"]: event.target.checked });
                 }}
                 checked={values.is_move}

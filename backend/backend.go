@@ -305,13 +305,13 @@ type SetFirstTimeSelectDataDirResponse struct {
 }
 
 func (b BackendService) SetFirstTimeSelectDataDir(ctx context.Context, reqeust *Empty) (*SetFirstTimeSelectDataDirResponse, error) {
-	go func() {
-		dir, err := zenity.SelectFile(zenity.Directory())
-		if err == nil {
-			PushMessageSelectDataDir(dir)
-		}
-	}()
-	return &SetFirstTimeSelectDataDirResponse{}, nil
+
+	dir, err := zenity.SelectFile(zenity.Directory())
+	if err == nil {
+		PushMessageSelectDataDir(dir)
+	}
+
+	return &SetFirstTimeSelectDataDirResponse{Path: dir}, nil
 }
 
 type SetFirstTimeRequest struct {
@@ -337,6 +337,25 @@ func (b BackendService) SetFirstTime(ctx context.Context, request *SetFirstTimeR
 func (b BackendService) GetPreferences(ctx context.Context, request *Empty) (models []PreferenceModel, err error) {
 	sqlite.Get().Find(&models)
 	return models, nil
+}
+
+type SetPreferencesRequest struct {
+	DataPath string `json:"data_path"`
+	IsMove   bool   `json:"is_move"`
+}
+
+func (b BackendService) SetPreferences(ctx context.Context, request *SetPreferencesRequest) (*Empty, error) {
+	p := PreferenceModel{
+		Key:   DataPath,
+		Value: request.DataPath,
+	}
+	sqlite.Get().Save(&p)
+	p = PreferenceModel{
+		Key:   IsMove,
+		Value: strconv.FormatBool(request.IsMove),
+	}
+	sqlite.Get().Save(&p)
+	return &Empty{}, nil
 }
 
 func (b BackendService) Quit(ctx context.Context, request *Empty) (*Empty, error) {

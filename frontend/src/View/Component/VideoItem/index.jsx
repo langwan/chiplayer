@@ -1,10 +1,11 @@
 import { ChihuoEditText } from "@chihuo/edittext";
-import { IconButton, Stack, Tooltip } from "@mui/material";
+import { Box, IconButton, Stack, Tooltip } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { IconSearch } from "@tabler/icons";
 import { backendAxios } from "Common/Request";
+
 export default function VideoItem(props) {
   return (
     <Card
@@ -22,16 +23,31 @@ export default function VideoItem(props) {
         },
       }}
     >
-      <CardMedia
-        sx={{ height: "auto", objectFit: "cover" }}
-        src={
-          props.video.player_uri
-            ? props.video.player_uri
-            : process.env.PUBLIC_URL + "/res/cover.mov"
-        }
-        component="video"
-        controls
-      />
+      <Box
+        sx={{
+          width: "100%",
+          paddingTop: "56.25%",
+          height: 0,
+          position: "relative",
+        }}
+      >
+        <CardMedia
+          sx={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+          src={
+            props.video.player_uri
+              ? props.video.player_uri
+              : process.env.PUBLIC_URL + "/res/cover.mov"
+          }
+          component="video"
+          controls
+        />
+      </Box>
       <Tooltip title={props.video.name} placement={"top"}>
         <CardContent>
           <Stack
