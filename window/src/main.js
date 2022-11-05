@@ -34,6 +34,7 @@ app.whenReady().then(() => {
         win = new BrowserWindow({
           title: "chiplayer",
           maximizable: true,
+          show: false,
           resizable: true,
           webPreferences: {
             nodeIntegration: true,
@@ -55,6 +56,8 @@ app.whenReady().then(() => {
           globalShortcut.register("CommandOrControl+R", function () {
             win.reload();
           });
+          win.maximize();
+          win.show();
         }, 1000);
       });
 
@@ -83,7 +86,47 @@ app.whenReady().then(() => {
           },
         ],
       };
-      const menu = Menu.buildFromTemplate([appMenu]);
+
+      const editMenu = {
+        label: "编辑",
+        submenu: [
+          {
+            label: "Undo",
+            accelerator: "CmdOrCtrl+Z",
+            role: "undo",
+          },
+          {
+            label: "Redo",
+            accelerator: "Shift+CmdOrCtrl+Z",
+            role: "redo",
+          },
+          {
+            type: "separator",
+          },
+          {
+            label: "Cut",
+            accelerator: "CmdOrCtrl+X",
+            role: "cut",
+          },
+          {
+            label: "Copy",
+            accelerator: "CmdOrCtrl+C",
+            role: "copy",
+          },
+          {
+            label: "Paste",
+            accelerator: "CmdOrCtrl+V",
+            role: "paste",
+          },
+          {
+            label: "Select All",
+            accelerator: "CmdOrCtrl+A",
+            role: "selectAll",
+          },
+        ],
+      };
+
+      const menu = Menu.buildFromTemplate([appMenu, editMenu]);
 
       Menu.setApplicationMenu(menu);
     } catch (e) {}

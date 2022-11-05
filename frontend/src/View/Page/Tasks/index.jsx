@@ -29,7 +29,7 @@ const columns = [
         direction={"row"}
         justifyContent="flex-start"
       >
-        <IconFile stroke={1} />
+        <IconFile width={20} stroke={1} />
         <Typography noWrap pl={1}>
           {params.row.name}
         </Typography>
