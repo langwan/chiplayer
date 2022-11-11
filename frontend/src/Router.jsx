@@ -24,10 +24,6 @@ export default createBrowserRouter(
           path: "tasks",
           element: <Tasks />,
         },
-        {
-          path: "tasks",
-          element: <Tasks />,
-        },
 
         {
           path: "document",
