@@ -17,8 +17,10 @@ cd scripts/package
 
 ## 代码结构
 
+```
 chiplayer\
-└── backend go语言编写的后台程序，react只是一个ui
-└── frontend react写的ui
-└── scripts 编译工具
-└── window electron编写的窗口程序
+ └── backend go语言编写的后台程序，react只是一个ui
+ └── frontend react写的ui
+ └── scripts 编译工具
+ └── window electron编写的窗口程序
+```
